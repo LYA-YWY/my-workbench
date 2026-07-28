@@ -1,6 +1,6 @@
 {
-  "name": "我的工作台",
-  "short_name": "工作台",
+  "name": "AYY工作台",
+  "short_name": "AYY",
   "description": "医疗·财经·健身·加密笔记 私人工作台",
   "start_url": "./index.html",
   "display": "standalone",
