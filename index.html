@@ -657,16 +657,35 @@ function renderTodayCheckins(){
   const el=$('#todayCheckins');
   if(!todayLog.length){el.innerHTML='<div class="empty" style="padding:16px">今日暂无用药记录，点「＋ 记录用药」开始</div>';return}
   el.innerHTML=`<div style="font-size:13px;font-weight:600;color:var(--m-med);margin-bottom:8px">📋 今日用药记录（${todayLog.length}次）</div>`+
-    todayLog.map(c=>{
+    renderCheckinGroups(todayLog,true);
+}
+// 按上午/下午/晚上分组渲染
+function renderCheckinGroups(log,withDelete){
+  const groups={'上午':[],'下午':[],'晚上':[]};
+  log.forEach(c=>{
+    const h=new Date(c.time).getHours();
+    if(h<12)groups['上午'].push(c);
+    else if(h<18)groups['下午'].push(c);
+    else groups['晚上'].push(c);
+  });
+  const icons={'上午':'☀️','下午':'🌤️','晚上':'🌙'};
+  let html='';
+  for(const period of ['上午','下午','晚上']){
+    if(!groups[period].length)continue;
+    html+=`<div style="margin-bottom:10px"><div style="font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500">${icons[period]} ${period}（${groups[period].length}次）</div>`;
+    html+=groups[period].map(c=>{
       const t=new Date(c.time);
       const tStr=`${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
       const medStr=c.meds.map(m=>`<span style="display:inline-block;padding:1px 8px;border-radius:10px;background:var(--m-med-l);color:var(--m-med);font-size:11px;margin:2px 2px">${m.name}${m.dose?' '+m.dose:''}</span>`).join('');
       return `<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#f7fafc;border:1px solid var(--border);border-radius:10px;margin-bottom:6px">
         <span style="font-weight:600;color:var(--m-med);font-size:13px;min-width:40px">${tStr}</span>
         <div style="flex:1">${medStr}${c.note?`<div style="font-size:11px;color:var(--muted);margin-top:2px">${c.note}</div>`:''}</div>
-        <button class="btn sm danger" onclick="delCheckin('${c.id}')">×</button>
+        ${withDelete?`<button class="btn sm danger" onclick="delCheckin('${c.id}')">×</button>`:''}
       </div>`;
     }).join('');
+    html+='</div>';
+  }
+  return html;
 }
 let selectedMeds=[];
 function openCheckinModal(){
@@ -719,16 +738,7 @@ function viewDayLog(dateStr){
   if(!log.length){
     $('#dayLogContent').innerHTML=`<div class="empty">当天无用药记录</div>`;
   }else{
-    $('#dayLogContent').innerHTML=log.map(c=>{
-      const t=new Date(c.time);
-      const tStr=`${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
-      const medStr=c.meds.map(m=>`<span style="display:inline-block;padding:2px 8px;border-radius:10px;background:var(--m-med-l);color:var(--m-med);font-size:12px;margin:2px">${m.name}${m.dose?' '+m.dose:''}</span>`).join('');
-      return `<div style="padding:10px;background:#f7fafc;border:1px solid var(--border);border-radius:10px;margin-bottom:8px">
-        <div style="font-weight:600;color:var(--m-med);font-size:14px;margin-bottom:4px">⏰ ${tStr}</div>
-        <div>${medStr}</div>
-        ${c.note?`<div style="font-size:12px;color:var(--muted);margin-top:4px">📝 ${c.note}</div>`:''}
-      </div>`;
-    }).join('');
+    $('#dayLogContent').innerHTML=renderCheckinGroups(log,false);
   }
   $('#modalDayLog').classList.add('show');
 }
