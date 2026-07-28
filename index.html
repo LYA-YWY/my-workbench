@@ -941,10 +941,7 @@ async function persistNotes(){
 $('#woDate').value=todayStr();
 renderReports();renderMeds();renderCal();renderFinance();renderWorkouts();
 
-/* ============ PWA Service Worker 注册 ============ */
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js').then(()=>console.log('SW已注册，支持离线')).catch(e=>console.log('SW注册失败:',e));
-}
+/* SW 已禁用，避免图标缓存问题 */
 </script>
 </body>
 </html>
