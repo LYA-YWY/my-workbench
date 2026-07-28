@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#f4f7fa">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="工作台">
+<meta name="mobile-web-app-capable" content="yes">
+<title>我的工作台</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f7fa; --bg-2:#ffffff; --card:#ffffff; --card-2:#f0f4f8;
+  --border:#e2e8f0; --text:#2d3748; --muted:#718096; --dim:#a0aec0;
+  --radius:14px;
+  /* 模块主题色 */
+  --m-med:#5b9bd5;    /* 医疗-清新蓝 */
+  --m-med-l:#e8f1fa;
+  --m-fin:#3eb489;    /* 财经-清新绿 */
+  --m-fin-l:#e6f7f0;
+  --m-fit:#f0936b;    /* 健身-清新橙 */
+  --m-fit-l:#fdeee6;
+  --m-note:#b07cc6;   /* 笔记-清新紫 */
+  --m-note-l:#f3edf8;
+  --accent:#5b9bd5; --accent-2:#3eb489; --warn:#f6ad55; --danger:#fc8181;
+  --pink:#d57ee0; --gold:#f6c343;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Noto Sans SC',-apple-system,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.6;
+  background-image:radial-gradient(1200px 600px at 80% -10%, rgba(91,155,213,.07), transparent),
+                   radial-gradient(900px 500px at -10% 110%, rgba(62,180,137,.06), transparent);
+  background-attachment:fixed;
+}
+.mono{font-family:'JetBrains Mono',monospace}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ===== 顶部 ===== */
+header.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(255,255,255,.88);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  padding:14px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.brand{font-weight:700;font-size:18px;display:flex;align-items:center;gap:10px;color:var(--text)}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--m-med),var(--m-fin));box-shadow:0 0 10px rgba(91,155,213,.4)}
+.brand small{color:var(--muted);font-weight:400;font-size:12px;margin-left:4px}
+nav.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+nav.tabs button{
+  background:transparent;border:1.5px solid transparent;color:var(--muted);
+  padding:8px 16px;border-radius:22px;cursor:pointer;font-size:14px;font-family:inherit;
+  transition:.25s;display:flex;align-items:center;gap:6px;
+}
+nav.tabs button:hover{background:var(--card-2)}
+nav.tabs button[data-tab="medical"].active{color:var(--m-med);background:var(--m-med-l);border-color:var(--m-med)}
+nav.tabs button[data-tab="finance"].active{color:var(--m-fin);background:var(--m-fin-l);border-color:var(--m-fin)}
+nav.tabs button[data-tab="fitness"].active{color:var(--m-fit);background:var(--m-fit-l);border-color:var(--m-fit)}
+nav.tabs button[data-tab="notes"].active{color:var(--m-note);background:var(--m-note-l);border-color:var(--m-note)}
+.clock{color:var(--muted);font-size:13px;margin-left:auto;font-family:'JetBrains Mono',monospace}
+
+/* ===== 布局 ===== */
+main{max-width:1280px;margin:0 auto;padding:24px;padding-top:max(24px,env(safe-area-inset-top));padding-bottom:max(24px,env(safe-area-inset-bottom))}
+.panel{display:none;animation:fade .3s ease}
+.panel.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.panel-head{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.panel-head h2{font-size:22px;font-weight:700}
+.panel-head .sub{color:var(--muted);font-size:13px}
+.grid{display:grid;gap:16px}
+.g-2{grid-template-columns:repeat(2,1fr)}
+.g-3{grid-template-columns:repeat(3,1fr)}
+.g-4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:980px){.g-3,.g-4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:680px){.g-2,.g-3,.g-4{grid-template-columns:1fr}}
+
+/* ===== 卡片 ===== */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card h3{font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card h3 .ico{font-size:18px}
+.muted{color:var(--muted)}.dim{color:var(--dim)}
+.tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;background:var(--card-2);color:var(--muted);border:1px solid var(--border)}
+.tag.up{color:var(--m-fin);border-color:rgba(62,180,137,.3);background:var(--m-fin-l)}
+.tag.down{color:var(--danger);border-color:rgba(252,129,129,.3);background:#fef0f0}
+.tag.warn{color:var(--warn);border-color:rgba(246,173,85,.3);background:#fef5e7}
+
+/* ===== 模块主题色 ===== */
+#panel-medical .panel-head h2{color:var(--m-med)}
+#panel-medical .card{border-left:3px solid var(--m-med)}
+#panel-finance .panel-head h2{color:var(--m-fin)}
+#panel-finance .card{border-left:3px solid var(--m-fin)}
+#panel-finance .kpi .val{color:var(--text)}
+#panel-fitness .panel-head h2{color:var(--m-fit)}
+#panel-fitness .card{border-left:3px solid var(--m-fit)}
+#panel-fitness .stat-mini .num{color:var(--m-fit)}
+#panel-notes .panel-head h2{color:var(--m-note)}
+#panel-notes .card{border-left:3px solid var(--m-note)}
+.lock-screen .lock-ico{color:var(--m-note)}
+
+/* ===== 按钮 / 表单 ===== */
+.btn{background:var(--card-2);border:1px solid var(--border);color:var(--text);padding:9px 16px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:13px;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--accent);background:#e6f0fa}
+.btn.primary{background:linear-gradient(135deg,var(--m-med),#4a8bc2);border-color:transparent;color:#fff}
+.btn.primary:hover{filter:brightness(1.05);background:linear-gradient(135deg,var(--m-med),#4a8bc2)}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--danger);border-color:rgba(252,129,129,.3)}
+.btn.danger:hover{background:#fef0f0}
+.btn.sm{padding:6px 10px;font-size:12px}
+input,textarea,select{background:#f7fafc;border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:10px;font-family:inherit;font-size:13px;width:100%}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--m-med);background:#fff;box-shadow:0 0 0 3px rgba(91,155,213,.12)}
+textarea{resize:vertical;min-height:80px}
+label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.row>*{flex:1;min-width:140px}
+.row .no-flex{flex:0 0 auto}
+
+/* ===== 医疗：打卡日历 ===== */
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal-cell{aspect-ratio:1;background:#f7fafc;border:1px solid var(--border);border-radius:8px;padding:6px;font-size:11px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:.2s;position:relative}
+.cal-cell:hover{border-color:var(--m-med);background:var(--m-med-l)}
+.cal-cell.done{background:var(--m-fin-l);border-color:rgba(62,180,137,.4)}
+.cal-cell.done::after{content:'✓';position:absolute;top:3px;right:5px;color:var(--m-fin);font-size:13px}
+.cal-cell.today{box-shadow:0 0 0 2px var(--m-med) inset}
+.cal-cell .d{font-weight:700;color:var(--text)}
+.cal-cell .m{font-size:9px;color:var(--m-fin)}
+.cal-head{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px;text-align:center;color:var(--dim);font-size:11px}
+
+/* 文件列表 */
+.file-list{display:flex;flex-direction:column;gap:8px;max-height:260px;overflow:auto}
+.file-item{display:flex;align-items:center;gap:10px;padding:9px 10px;background:#f7fafc;border:1px solid var(--border);border-radius:10px;font-size:13px}
+.file-item .fname{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+.file-item .fdate{color:var(--dim);font-size:11px;font-family:'JetBrains Mono',monospace}
+.thumb{width:48px;height:48px;border-radius:8px;object-fit:cover;background:var(--card-2)}
+.file-item .ficon{width:48px;height:48px;border-radius:8px;background:var(--m-med-l);display:flex;align-items:center;justify-content:center;font-size:22px}
+
+/* 用药记录列表 */
+.med-item{display:flex;align-items:center;gap:10px;padding:10px;background:#f7fafc;border:1px solid var(--border);border-radius:10px;margin-bottom:8px}
+.med-item .name{font-weight:500;flex:1;color:var(--text)}
+.med-item .dose{color:var(--muted);font-size:12px}
+
+/* ===== 财经 ===== */
+.news-item{padding:11px 0;border-bottom:1px solid var(--border)}
+.news-item:last-child{border:none}
+.news-item .nt{font-weight:500;font-size:14px;margin-bottom:3px;color:var(--text)}
+.news-item .nm{color:var(--muted);font-size:12px;line-height:1.5}
+.news-item .nsrc{color:var(--dim);font-size:11px;margin-top:3px}
+.kpi{display:flex;flex-direction:column;gap:2px}
+.kpi .lab{font-size:11px;color:var(--muted)}
+.kpi .val{font-size:20px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text)}
+.kpi .chg{font-size:12px;font-family:'JetBrains Mono',monospace}
+.pos{color:var(--m-fin)}.neg{color:var(--danger)}
+.insight{background:linear-gradient(135deg,rgba(62,180,137,.08),rgba(91,155,213,.06));border:1px solid rgba(62,180,137,.2);border-radius:12px;padding:14px;margin-top:8px}
+.insight h4{font-size:13px;color:var(--m-fin);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.insight ul{padding-left:18px;font-size:13px;color:var(--text)}
+.insight li{margin-bottom:5px;line-height:1.6}
+.insight li b{color:var(--m-fin)}
+
+/* ===== 健身 ===== */
+.workout-log{display:flex;flex-direction:column;gap:10px;max-height:380px;overflow:auto}
+.wo-card{background:#f7fafc;border:1px solid var(--border);border-radius:12px;padding:12px;display:flex;gap:12px}
+.wo-card img{width:88px;height:88px;border-radius:10px;object-fit:cover;cursor:pointer;flex-shrink:0}
+.wo-card .info{flex:1;min-width:0}
+.wo-card .info .wt{font-weight:600;font-size:14px;margin-bottom:3px;color:var(--text)}
+.wo-card .info .wd{color:var(--dim);font-size:11px;font-family:'JetBrains Mono',monospace;margin-bottom:6px}
+.wo-card .info .wm{font-size:12px;color:var(--muted);line-height:1.5}
+.muscle-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.muscle-chips span{font-size:10px;padding:2px 8px;border-radius:12px;background:var(--m-fit-l);color:var(--m-fit);border:1px solid rgba(240,147,107,.25)}
+.stat-mini{text-align:center;padding:10px;background:#f7fafc;border-radius:10px;border:1px solid var(--border)}
+.stat-mini .num{font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent)}
+.stat-mini .lab{font-size:11px;color:var(--muted)}
+
+/* ===== 笔记 ===== */
+.note-item{background:#f7fafc;border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;cursor:pointer;transition:.2s;position:relative}
+.note-item:hover{border-color:var(--m-note);background:var(--m-note-l);box-shadow:0 2px 8px rgba(176,124,198,.1)}
+.note-item .nt{font-weight:600;font-size:14px;margin-bottom:4px;color:var(--text);line-height:1.4}
+.note-item .nd{font-size:11px;color:var(--dim);font-family:'JetBrains Mono',monospace;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.note-item .nd::before{content:'';width:3px;height:3px;border-radius:50%;background:var(--m-note);display:inline-block}
+.note-item .np{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;line-height:1.6}
+.note-item .nd-badge{display:inline-block;font-size:10px;padding:1px 7px;border-radius:10px;background:var(--m-note-l);color:var(--m-note);border:1px solid rgba(176,124,198,.2);margin-left:6px;font-weight:500}
+.note-del{position:absolute;top:12px;right:12px;width:26px;height:26px;border-radius:50%;background:transparent;border:1px solid var(--border);color:var(--dim);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:.2s;opacity:0}
+.note-item:hover .note-del{opacity:1}
+.note-del:hover{background:#fef0f0;border-color:var(--danger);color:var(--danger)}
+.lock-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:60px 20px;text-align:center}
+.lock-screen .lock-ico{font-size:54px;opacity:.7}
+.lock-screen input{max-width:280px;text-align:center}
+
+/* ===== 模态框 ===== */
+.modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-mask.show{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;max-width:560px;width:100%;max-height:88vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.modal h3{margin-bottom:14px;font-size:17px}
+.modal .foot{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.img-preview-mask{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:200;display:none;align-items:center;justify-content:center;padding:30px;cursor:zoom-out}
+.img-preview-mask.show{display:flex}
+.img-preview-mask img{max-width:100%;max-height:100%;border-radius:10px}
+
+/* ===== 杂项 ===== */
+.empty{text-align:center;color:var(--dim);padding:30px;font-size:13px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--m-med);color:var(--text);padding:10px 20px;border-radius:10px;z-index:300;font-size:13px;opacity:0;transition:.3s;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.toast.show{opacity:1;bottom:34px}
+.scroll::-webkit-scrollbar{width:6px;height:6px}
+.scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.divider{height:1px;background:var(--border);margin:14px 0}
+.hint{font-size:11px;color:var(--dim);margin-top:6px;line-height:1.5}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><span class="dot"></span>我的工作台<small>v1.0 · 本地私有</small></div>
+  <nav class="tabs">
+    <button class="active" data-tab="medical">🏥 医疗</button>
+    <button data-tab="finance">📈 财经</button>
+    <button data-tab="fitness">💪 健身</button>
+    <button data-tab="notes">🔒 笔记</button>
+  </nav>
+  <div class="clock" id="clock">--</div>
+</header>
+
+<main>
+
+<!-- ===================== 医疗 ===================== -->
+<section class="panel active" id="panel-medical">
+  <div class="panel-head">
+    <h2>🏥 医疗管理</h2>
+    <span class="sub">检查报告 · 用药记录 · 每日打卡</span>
+  </div>
+  <div class="grid g-2">
+    <!-- 检查报告 -->
+    <div class="card">
+      <h3><span class="ico">📁</span>检查报告备份与解读</h3>
+      <div class="row">
+        <div><input type="file" id="reportFile" accept="image/*,application/pdf" multiple></div>
+        <div class="no-flex"><button class="btn primary sm" onclick="uploadReport()">上传</button></div>
+      </div>
+      <div class="hint">支持图片/PDF，文件保存在浏览器本地（不会上传到服务器）</div>
+      <div class="divider"></div>
+      <div class="file-list scroll" id="reportList"></div>
+    </div>
+
+    <!-- 用药记录 -->
+    <div class="card">
+      <h3><span class="ico">💊</span>用药记录</h3>
+      <div class="row">
+        <div><label>药品名称</label><input id="medName" placeholder="如：二甲双胍"></div>
+        <div><label>剂量/频次</label><input id="medDose" placeholder="如：0.5g 每日两次"></div>
+        <div><label>开始日期</label><input type="date" id="medStart"></div>
+        <div><label>结束日期</label><input type="date" id="medEnd"></div>
+        <div class="no-flex"><button class="btn primary sm" onclick="addMed()">添加</button></div>
+      </div>
+      <div class="hint">填写用药周期后，列表会显示服药区间和剩余天数</div>
+      <div class="divider"></div>
+      <div id="medList"></div>
+    </div>
+
+    <!-- 每日打卡 -->
+    <div class="card" style="grid-column:1/-1">
+      <h3><span class="ico">✅</span>每日用药打卡 · <span id="calMonthLabel" class="muted"></span></h3>
+      <div class="row" style="margin-bottom:12px">
+        <div class="no-flex"><button class="btn sm" onclick="shiftCal(-1)">‹ 上月</button></div>
+        <div class="no-flex"><button class="btn sm" onclick="shiftCal(1)">下月 ›</button></div>
+        <div class="no-flex"><button class="btn primary sm" onclick="toggleToday()">今日打卡</button></div>
+        <div style="flex:0 0 auto;align-self:center;color:var(--muted);font-size:13px" id="streakInfo"></div>
+      </div>
+      <div class="cal-head" id="calHead"></div>
+      <div class="calendar" id="calendar"></div>
+      <div class="hint">点击日期可手动标记/取消；连续打卡天数会自动统计</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 财经 ===================== -->
+<section class="panel" id="panel-finance">
+  <div class="panel-head">
+    <h2>📈 财经资讯</h2>
+    <span class="sub" id="financeDate">数据日期：--</span>
+    <div style="margin-left:auto"><button class="btn primary sm" onclick="updateFinance()">🔄 更新今日财经</button></div>
+  </div>
+
+  <!-- 行情卡片 -->
+  <div class="grid g-4" id="kpiGrid" style="margin-bottom:16px"></div>
+
+  <!-- 金价走势 -->
+  <div class="card" style="margin-bottom:16px">
+    <h3><span class="ico">🥇</span>金价走势（近7日，美元/盎司）</h3>
+    <canvas id="goldChart" height="120"></canvas>
+    <div class="hint" id="goldHint"></div>
+  </div>
+
+  <div class="grid g-2">
+    <!-- 财经新闻 -->
+    <div class="card">
+      <h3><span class="ico">💰</span>财经要闻</h3>
+      <div class="scroll" id="finNews" style="max-height:420px;overflow:auto"></div>
+    </div>
+    <!-- 社会新闻 + 投资要点 -->
+    <div class="card">
+      <h3><span class="ico">🌐</span>社会新闻</h3>
+      <div class="scroll" id="socNews" style="max-height:200px;overflow:auto;margin-bottom:12px"></div>
+      <div class="insight">
+        <h4>💡 对普通人有利的信息与投资建议</h4>
+        <ul id="insightList"></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 健身 ===================== -->
+<section class="panel" id="panel-fitness">
+  <div class="panel-head">
+    <h2>💪 普拉提训练记录</h2>
+    <span class="sub">私教课程 · 照片归档 · 肌群解读</span>
+  </div>
+
+  <!-- 统计 -->
+  <div class="grid g-4" style="margin-bottom:16px" id="fitStats"></div>
+
+  <div class="grid g-2">
+    <!-- 上传训练 -->
+    <div class="card">
+      <h3><span class="ico">📸</span>上传今日训练照片</h3>
+      <div><label>训练日期</label><input type="date" id="woDate"></div>
+      <div style="margin-top:8px"><label>训练内容/动作（可选，留空让我解读）</label>
+        <textarea id="woContent" placeholder="如：核心卷腹、百次拍击、侧卧抬腿..."></textarea></div>
+      <div style="margin-top:8px"><input type="file" id="woFile" accept="image/*" multiple></div>
+      <div style="margin-top:10px"><button class="btn primary sm" onclick="addWorkout()">保存训练记录</button></div>
+      <div class="hint">上传后请在记录卡片中点击「请求肌群解读」，我会根据动作/照片分析目标肌群与作用</div>
+    </div>
+
+    <!-- 肌群小知识 -->
+    <div class="card">
+      <h3><span class="ico">🧠</span>普拉提肌群速查</h3>
+      <div style="font-size:13px;color:var(--muted);line-height:1.8">
+        <p><b style="color:var(--m-fit)">核心（腹横肌/多裂肌）</b>：百次拍击、卷腹——稳定脊柱、改善体态</p>
+        <p><b style="color:var(--m-fit)">臀腿（臀大肌/股四头）</b>：桥式、侧卧抬腿——翘臀、改善膝痛</p>
+        <p><b style="color:var(--m-fit)">背伸肌群</b>：天鹅俯卧、游泳——改善圆肩驼背、护腰</p>
+        <p><b style="color:var(--m-fit)">肩袖/上背</b>：手臂画圈、拉力带——缓解肩颈僵硬</p>
+        <p><b style="color:var(--m-fit)">髋外展肌</b>：蚌式、侧踢——改善假胯宽、骨盆稳定</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 训练记录 -->
+  <div class="card" style="margin-top:16px">
+    <h3><span class="ico">📅</span>训练历史（按时间倒序）</h3>
+    <div class="workout-log scroll" id="workoutList"></div>
+  </div>
+</section>
+
+<!-- ===================== 笔记 ===================== -->
+<section class="panel" id="panel-notes">
+  <div id="notesLocked">
+    <div class="lock-screen">
+      <div class="lock-ico">🔒</div>
+      <h2 style="font-weight:700">私人笔记 · 加密</h2>
+      <p class="muted" style="max-width:340px;font-size:13px">笔记使用 AES-GCM 端到端加密，密码不存储。忘记密码将无法恢复内容，请妥善保管。</p>
+      <input type="password" id="notePwd" placeholder="输入密码解锁" onkeydown="if(event.key==='Enter')unlockNotes()">
+      <div>
+        <button class="btn primary" onclick="unlockNotes()">解锁</button>
+        <button class="btn ghost" onclick="setNotePwd()">设置/修改密码</button>
+      </div>
+      <div class="hint" style="max-width:340px">首次使用请先点「设置/修改密码」创建密码；密码经 SHA-256 派生密钥，仅存哈希用于校验</div>
+    </div>
+  </div>
+
+  <div id="notesUnlocked" style="display:none">
+    <div class="panel-head">
+      <h2>🔒 私人笔记</h2>
+      <span class="sub">AES-GCM 加密 · 按时间倒序</span>
+      <div style="margin-left:auto">
+        <button class="btn primary sm" onclick="openNoteEditor()">＋ 新笔记</button>
+        <button class="btn ghost sm" onclick="lockNotes()">🔒 锁定</button>
+      </div>
+    </div>
+    <div id="noteList"></div>
+  </div>
+</section>
+
+</main>
+
+<!-- 模态框：报告解读 -->
+<div class="modal-mask" id="modalReport">
+  <div class="modal">
+    <h3>📄 报告解读</h3>
+    <div id="reportDetail"></div>
+    <div class="foot">
+      <button class="btn sm" onclick="closeModal('modalReport')">关闭</button>
+      <button class="btn primary sm" onclick="saveReportInterpret()">保存解读</button>
+    </div>
+  </div>
+</div>
+
+<!-- 模态框：肌群解读 -->
+<div class="modal-mask" id="modalMuscle">
+  <div class="modal">
+    <h3>🧠 肌群解读请求</h3>
+    <div id="muscleDetail"></div>
+    <div class="foot">
+      <button class="btn sm" onclick="closeModal('modalMuscle')">取消</button>
+      <button class="btn primary sm" onclick="confirmMuscle()">生成解读</button>
+    </div>
+  </div>
+</div>
+
+<!-- 模态框：笔记编辑 -->
+<div class="modal-mask" id="modalNote">
+  <div class="modal" style="max-width:520px">
+    <h3 id="noteEditorTitle" style="color:var(--m-note)">📝 新笔记</h3>
+    <div><label>标题（可选）</label><input id="noteTitle" placeholder="留空则用正文首句作为标题"></div>
+    <div style="margin-top:12px"><label>正文</label><textarea id="noteBody" rows="12" style="min-height:200px;font-size:14px;line-height:1.7" placeholder="写下你想记录的内容..."></textarea></div>
+    <div class="foot">
+      <button class="btn danger sm" id="noteDelBtn" onclick="delNote()" style="margin-right:auto;display:none">🗑 删除</button>
+      <button class="btn sm" onclick="closeModal('modalNote')">取消</button>
+      <button class="btn primary sm" onclick="saveNote()">💾 保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 图片预览 -->
+<div class="img-preview-mask" id="imgPreview" onclick="this.classList.remove('show')">
+  <img id="imgPreviewSrc">
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ 通用 ============ */
+const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
+const LS={
+  get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},
+  set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))
+};
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000)}
+function todayStr(){return new Date().toISOString().slice(0,10)}
+function fmtDate(d){return new Date(d).toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})}
+
+// 图片压缩：自动缩放+压缩质量，保证清晰度够分析，体积大幅缩小
+// maxWidth 最大宽度1200px，质量0.7（JPEG），照片类通常 2MB→200KB
+function compressImage(dataUrl,maxW,maxH,quality){
+  return new Promise(resolve=>{
+    const img=new Image();
+    img.onload=()=>{
+      let w=img.width,h=img.height;
+      // 按比例缩放
+      if(w>maxW){h=h*maxW/w;w=maxW}
+      if(h>maxH){w=w*maxH/h;h=maxH}
+      const canvas=document.createElement('canvas');
+      canvas.width=w;canvas.height=h;
+      const ctx=canvas.getContext('2d');
+      // 白底（防止透明PNG变黑）
+      ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+      ctx.drawImage(img,0,0,w,h);
+      resolve(canvas.toDataURL('image/jpeg',quality));
+    };
+    img.onerror=()=>resolve(dataUrl); // 压缩失败返回原图
+    img.src=dataUrl;
+  });
+}
+
+// 时钟
+function tick(){const d=new Date();$('#clock').textContent=d.toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',weekday:'short',hour:'2-digit',minute:'2-digit'})}
+setInterval(tick,1000);tick();
+
+// Tab 切换
+$$('nav.tabs button').forEach(b=>b.onclick=()=>{
+  $$('nav.tabs button').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  $$('.panel').forEach(p=>p.classList.remove('active'));
+  $('#panel-'+b.dataset.tab).classList.add('active');
+});
+
+// 模态框
+function closeModal(id){$('#'+id).classList.remove('show')}
+function previewImg(src){$('#imgPreviewSrc').src=src;$('#imgPreview').classList.add('show')}
+
+/* ============ 医疗：报告 ============ */
+let reports=LS.get('reports',[]);
+function renderReports(){
+  const el=$('#reportList');
+  if(!reports.length){el.innerHTML='<div class="empty">暂无报告，上传后可添加解读</div>';return}
+  el.innerHTML=reports.slice().reverse().map(r=>`
+    <div class="file-item">
+      ${r.type.startsWith('image/')?`<img class="thumb" src="${r.data}" onclick="previewImg('${r.data}')">`:`<div class="ficon">📄</div>`}
+      <div class="fname">${r.name}<br><span class="fdate">${fmtDate(r.date)}</span></div>
+      <button class="btn sm" onclick="viewReport('${r.id}')">解读</button>
+      <button class="btn sm danger" onclick="delReport('${r.id}')">删</button>
+    </div>`).join('');
+}
+function uploadReport(){
+  const files=$('#reportFile').files;
+  if(!files.length){toast('请先选择文件');return}
+  let pending=files.length;
+  Array.from(files).forEach(f=>{
+    if(f.type.startsWith('image/')){
+      // 图片先读原图再压缩
+      const r=new FileReader();
+      r.onload=async()=>{
+        const compressed=await compressImage(r.result,1400,1800,0.72);
+        reports.push({id:Date.now()+'_'+Math.random().toString(36).slice(2,7),name:f.name,type:'image/jpeg',data:compressed,date:new Date().toISOString(),interpret:''});
+        if(--pending===0){LS.set('reports',reports);renderReports();$('#reportFile').value='';toast('已上传 '+files.length+' 份报告（图片已压缩）')}
+      };
+      r.readAsDataURL(f);
+    }else{
+      // PDF 等非图片文件不压缩
+      const r=new FileReader();
+      r.onload=()=>{
+        reports.push({id:Date.now()+'_'+Math.random().toString(36).slice(2,7),name:f.name,type:f.type,data:r.result,date:new Date().toISOString(),interpret:''});
+        if(--pending===0){LS.set('reports',reports);renderReports();$('#reportFile').value='';toast('已上传 '+files.length+' 份报告')}
+      };
+      r.readAsDataURL(f);
+    }
+  });
+}
+function delReport(id){if(confirm('确定删除此报告？')){reports=reports.filter(r=>r.id!==id);LS.set('reports',reports);renderReports()}}
+function viewReport(id){
+  const r=reports.find(x=>x.id===id);if(!r)return;
+  curReportId=id;
+  let html='';
+  if(r.type.startsWith('image/'))html+=`<img src="${r.data}" style="width:100%;border-radius:10px;margin-bottom:12px">`;
+  else html+=`<div class="empty">PDF文件：${r.name}</div>`;
+  html+=`<label>我的解读/医嘱备注</label><textarea id="interpretText" rows="6">${r.interpret||''}</textarea>
+         <div class="hint">提示：上传报告后，可让我（WorkBuddy）帮你看报告内容并填写解读，把解读文字粘贴到这里保存。</div>`;
+  $('#reportDetail').innerHTML=html;
+  $('#modalReport').classList.add('show');
+}
+let curReportId=null;
+function saveReportInterpret(){
+  const r=reports.find(x=>x.id===curReportId);if(!r)return;
+  r.interpret=$('#interpretText').value;
+  LS.set('reports',reports);closeModal('modalReport');renderReports();toast('解读已保存');
+}
+
+/* ============ 医疗：用药记录 ============ */
+let meds=LS.get('meds',[]);
+function renderMeds(){
+  const el=$('#medList');
+  if(!meds.length){el.innerHTML='<div class="empty">暂无用药记录</div>';return}
+  const today=new Date();today.setHours(0,0,0,0);
+  el.innerHTML=meds.map(m=>{
+    // 计算周期状态
+    let cycleInfo='',statusTag='';
+    if(m.start||m.end){
+      const s=m.start?new Date(m.start):null;
+      const e=m.end?new Date(m.end):null;
+      if(s)s.setHours(0,0,0,0);
+      if(e)e.setHours(0,0,0,0);
+      const fmtD=d=>d?`${d.getMonth()+1}月${d.getDate()}日`:'';
+      cycleInfo=`${fmtD(s)} ~ ${fmtD(e)}`;
+      // 状态判断
+      if(s&&today<s){statusTag='<span class="tag">未开始</span>'}
+      else if(e&&today>e){statusTag='<span class="tag down">已结束</span>'}
+      else if(s&&e){
+        const days=Math.ceil((e-today)/86400000);
+        statusTag=days>=0?`<span class="tag up">服用中·剩${days+1}天</span>`:'<span class="tag down">已结束</span>';
+      }else if(s){statusTag='<span class="tag up">服用中</span>'}
+    }
+    return `
+    <div class="med-item">
+      <span style="font-size:18px">💊</span>
+      <span class="name">${m.name}<br>
+        <span class="dose">${m.dose||''}</span>
+        ${cycleInfo?`<br><span class="dose">📅 ${cycleInfo}</span>`:''}
+        ${statusTag?`<br>${statusTag}`:''}
+      </span>
+      <button class="btn sm danger" onclick="delMed('${m.id}')">删</button>
+    </div>`;
+  }).join('');
+}
+function addMed(){
+  const n=$('#medName').value.trim(),d=$('#medDose').value.trim();
+  const s=$('#medStart').value,e=$('#medEnd').value;
+  if(!n){toast('请输入药品名称');return}
+  if(s&&e&&new Date(s)>new Date(e)){toast('结束日期不能早于开始日期');return}
+  meds.push({id:Date.now()+'',name:n,dose:d,start:s||'',end:e||''});
+  LS.set('meds',meds);renderMeds();
+  $('#medName').value='';$('#medDose').value='';$('#medStart').value='';$('#medEnd').value='';
+  toast('已添加用药记录');
+}
+function delMed(id){meds=meds.filter(m=>m.id!==id);LS.set('meds',meds);renderMeds()}
+
+/* ============ 医疗：打卡日历 ============ */
+let calCursor=new Date();
+let checkins=LS.get('checkins',[]);
+function isSameDay(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate()}
+function renderCal(){
+  const y=calCursor.getFullYear(),m=calCursor.getMonth();
+  $('#calMonthLabel').textContent=`${y}年${m+1}月`;
+  const heads=['日','一','二','三','四','五','六'];
+  $('#calHead').innerHTML=heads.map(h=>`<div>${h}</div>`).join('');
+  const first=new Date(y,m,1).getDay();
+  const days=new Date(y,m+1,0).getDate();
+  let html='';
+  for(let i=0;i<first;i++)html+=`<div class="cal-cell" style="visibility:hidden"></div>`;
+  const today=new Date();
+  for(let d=1;d<=days;d++){
+    const dt=new Date(y,m,d);
+    const done=checkins.some(c=>isSameDay(new Date(c),dt));
+    const isToday=isSameDay(dt,today);
+    html+=`<div class="cal-cell ${done?'done':''} ${isToday?'today':''}" onclick="toggleDate('${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}')">
+      <div class="d">${d}</div><div class="m">${done?'已打卡':''}</div></div>`;
+  }
+  $('#calendar').innerHTML=html;
+  // 连续天数
+  let streak=0;let cur=new Date(today);
+  while(checkins.some(c=>isSameDay(new Date(c),cur))){streak++;cur.setDate(cur.getDate()-1)}
+  $('#streakInfo').textContent=`🔥 连续打卡 ${streak} 天`;
+}
+function toggleDate(s){
+  const dt=new Date(s);
+  const i=checkins.findIndex(c=>isSameDay(new Date(c),dt));
+  if(i>=0)checkins.splice(i,1);else checkins.push(dt.toISOString());
+  LS.set('checkins',checkins);renderCal();
+}
+function toggleToday(){toggleDate(todayStr())}
+function shiftCal(n){calCursor.setMonth(calCursor.getMonth()+n);renderCal()}
+
+/* ============ 财经 ============ */
+// 内置今日财经数据（2026-07-28，来源：东方财富网等公开信息）
+const BUILTIN_FINANCE = {
+  date:"2026-07-28",
+  stock:{sh:"3858.25",shChg:"+1.15%",hk:"25207.18",hkChg:"+0.98%",us:"52210.08",usChg:"+0.51%",nasdaq:"24932.08",nasdaqChg:"-0.18%",dax:"25361.03",daxChg:"+1.04%"},
+  gold:{spot:4073.98,spotChg:"-0.07%",shanghai:"890.80",shanghaiChg:"-0.35%",comex:"4073.80",comexChg:"-0.08%"},
+  oil:{wti:"81.93",wtiChg:"-0.82%",brent:"88.36",brentChg:"-8.70%"},
+  fx:{dxy:"101.51",dxyChg:"+0.04%",cny:"6.7702",cnyChg:"上调38点"},
+  goldHistory:[{d:"07-22",v:4105.20},{d:"07-23",v:4092.40},{d:"07-24",v:4118.60},{d:"07-25",v:4088.99},{d:"07-26",v:4076.50},{d:"07-27",v:4076.85},{d:"07-28",v:4073.98}],
+  newsFinance:[
+    {t:"美伊暂停互袭，国际油价重挫",m:"WTI原油跌至81美元/桶区间，布伦特原油重挫8.7%报88.36美元/桶，阿联酋穆尔班原油单日跌幅一度超12%。波斯湾石油出口逐渐恢复，全球能源市场承压。",s:"东方财富网"},
+    {t:"A股低开高走全线普涨，沪指收复3850点",m:"上证指数收报3858.25点涨1.15%，深成指大涨2.72%，创业板指暴涨3.16%。长鑫科技登陆科创板激活存储产业链，两市成交重返2万亿上方。",s:"东方财富网"},
+    {t:"长鑫科技上市盛宴：合肥国资持股市值过万亿",m:"长鑫科技科创板上市，存储芯片产业链情绪全面激活，半导体、算力硬件领涨双创指数，阿里浮盈千亿。",s:"东方财富网"},
+    {t:"国家税务总局：互联网平台缴税商户增长37%",m:"《互联网平台企业涉税信息报送规定》实施以来，今年一季度申报缴税平台内商户数量较实施前增长37%。",s:"东方财富网"},
+    {t:"希音通过港交所上市聆讯",m:"希音去年营收418亿美元，净利20.6亿美元，即将登陆港股。跨境电商龙头估值有望重估。",s:"东方财富网"},
+    {t:"苹果总市值逼近5万亿美元，再登全球第一",m:"苹果股价持续走强，总市值接近5万亿美元关口，重新登顶全球市值榜首。",s:"东方财富网"},
+    {t:"英伟达拟为OpenAI提供巨额融资担保",m:"英伟达计划为OpenAI提供巨额融资担保，AI算力龙头与模型厂商绑定加深。",s:"东方财富网"},
+    {t:"保时捷将在德国再裁员5000人",m:"欧洲车企调整持续，保时捷宣布在德国再裁员5000人，传统汽车产业转型压力加大。",s:"东方财富网"}
+  ],
+  newsSocial:[
+    {t:"两部门预拨1.8亿元支持6省防汛防台风",m:"财政部、应急管理部紧急预拨资金支持防汛防台风工作。"},
+    {t:"57个国家和3个国际组织确认参加进博会国家展",m:"第七届进博会筹备推进，国际合作热度不减。"},
+    {t:"河南农商银行再吸收合并9家机构",m:"注册资本增至超996亿元，中小银行改革化险持续推进。"}
+  ],
+  insights:[
+    "<b>油价大跌利好出行与航空</b>：布伦特原油单日跌8.7%，加满一箱油成本下降，航空、物流运输板块成本端直接受益，有车一族出行开支减少。",
+    "<b>金价高位震荡，定投优于追高</b>：现货黄金4073美元/盎司处于历史高位区间，短期波动加大。普通人可考虑分批定投黄金ETF或积金，避免一次性高位买入。",
+    "<b>A股存储芯片产业链活跃</b>：长鑫科技上市带动半导体情绪，普通人可通过相关ETF分散配置，但单一板块波动大，仓位不宜过重。",
+    "<b>人民币升值利好进口与海外消费</b>：在岸人民币6.7702，美元走弱背景下，海淘、留学换汇成本下降。",
+    "<b>LPR维持3.0%/3.5%，房贷利率低位</b>：5年期LPR 3.5%处于低位，刚需购房贷款成本较低，存量房贷可关注重定价机会。",
+    "<b>国债收益率下行，锁定长期收益</b>：10年期国债1.724%，偏好稳健者可关注长债基金，但需注意利率反弹风险。"
+  ]
+};
+let financeData=LS.get('finance',null)||BUILTIN_FINANCE;
+function renderFinance(){
+  if(!financeData){$('#financeDate').textContent='暂无数据，点击「更新今日财经」';return}
+  const f=financeData;
+  $('#financeDate').textContent='数据日期：'+f.date;
+  // KPI
+  const kpis=[
+    {lab:'上证指数',val:f.stock.sh,chg:f.stock.shChg},
+    {lab:'恒生指数',val:f.stock.hk,chg:f.stock.hkChg},
+    {lab:'道琼斯',val:f.stock.us,chg:f.stock.usChg},
+    {lab:'纳斯达克',val:f.stock.nasdaq,chg:f.stock.nasdaqChg},
+    {lab:'现货黄金',val:f.gold.spot+'$/oz',chg:f.gold.spotChg},
+    {lab:'沪金9999',val:f.gold.shanghai+'元/克',chg:f.gold.shanghaiChg},
+    {lab:'布伦特原油',val:f.oil.brent+'$/桶',chg:f.oil.brentChg},
+    {lab:'美元指数',val:f.fx.dxy,chg:f.fx.dxyChg}
+  ];
+  $('#kpiGrid').innerHTML=kpis.map(k=>{
+    const up=!String(k.chg).includes('-');
+    return `<div class="card"><div class="kpi">
+      <div class="lab">${k.lab}</div>
+      <div class="val">${k.val}</div>
+      <div class="chg ${up?'pos':'neg'}">${up?'▲':'▼'} ${k.chg}</div>
+    </div></div>`;
+  }).join('');
+  // 金价图
+  drawGoldChart(f.goldHistory);
+  $('#goldHint').textContent=`近7日区间 ${Math.min(...f.goldHistory.map(x=>x.v)).toFixed(0)} ~ ${Math.max(...f.goldHistory.map(x=>x.v)).toFixed(0)} 美元/盎司`;
+  // 新闻
+  $('#finNews').innerHTML=f.newsFinance.map(n=>`<div class="news-item"><div class="nt">${n.t}</div><div class="nm">${n.m}</div><div class="nsrc">${n.s||''}</div></div>`).join('');
+  $('#socNews').innerHTML=f.newsSocial.map(n=>`<div class="news-item"><div class="nt">${n.t}</div><div class="nm">${n.m}</div></div>`).join('');
+  $('#insightList').innerHTML=f.insights.map(i=>`<li>${i}</li>`).join('');
+}
+function drawGoldChart(data){
+  const c=$('#goldChart'),ctx=c.getContext('2d');
+  const w=c.width=c.offsetWidth*2,h=c.height=240;
+  ctx.scale(2,2);
+  const W=c.offsetWidth,H=120;
+  const pad=30;
+  const vs=data.map(d=>d.v),min=Math.min(...vs),max=Math.max(...vs);
+  const rng=max-min||1;
+  ctx.clearRect(0,0,W,H);
+  // grid
+  ctx.strokeStyle='#e2e8f0';ctx.fillStyle='#a0aec0';ctx.font='10px monospace';
+  for(let i=0;i<=3;i++){
+    const y=pad+(H-pad-20)*i/3;
+    ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(W-10,y);ctx.stroke();
+    ctx.fillText((max-rng*i/3).toFixed(0),2,y+3);
+  }
+  // line
+  ctx.strokeStyle='#f0936b';ctx.lineWidth=2;ctx.beginPath();
+  data.forEach((d,i)=>{
+    const x=pad+(W-pad-10)*i/(data.length-1);
+    const y=pad+(H-pad-20)*(1-(d.v-min)/rng);
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  });
+  ctx.stroke();
+  // dots
+  ctx.fillStyle='#f0936b';
+  data.forEach((d,i)=>{
+    const x=pad+(W-pad-10)*i/(data.length-1);
+    const y=pad+(H-pad-20)*(1-(d.v-min)/rng);
+    ctx.beginPath();ctx.arc(x,y,3,0,7);ctx.fill();
+    if(i===data.length-1){ctx.fillStyle='#2d3748';ctx.font='bold 11px monospace';ctx.fillText(d.v.toFixed(0),x-15,y-10);ctx.fillStyle='#f0936b'}
+  });
+}
+function updateFinance(){
+  toast('请在 WorkBuddy 中说「更新工作台财经数据」，我会重新抓取并写入。也可手动编辑 financeData。');
+  // 这里 financeData 由外部 WorkBuddy 写入 localStorage 的 'finance' 键后刷新
+}
+
+/* ============ 健身 ============ */
+let workouts=LS.get('workouts',[]);
+function renderWorkouts(){
+  // 统计
+  const total=workouts.length;
+  const thisMonth=workouts.filter(w=>w.date.slice(0,7)===todayStr().slice(0,7)).length;
+  const muscleCount={};
+  workouts.forEach(w=>(w.muscles||[]).forEach(m=>muscleCount[m]=(muscleCount[m]||0)+1));
+  const topMuscle=Object.entries(muscleCount).sort((a,b)=>b[1]-a[1])[0];
+  $('#fitStats').innerHTML=[
+    {num:total,lab:'累计训练次数'},
+    {num:thisMonth,lab:'本月训练'},
+    {num:topMuscle?topMuscle[1]:0,lab:'最多训练部位'},
+    {num:total?Math.round(total*4/4):0,lab:'总训练(小时≈)'}
+  ].map(s=>`<div class="stat-mini"><div class="num">${s.num}</div><div class="lab">${s.lab}</div></div>`).join('');
+
+  const el=$('#workoutList');
+  if(!workouts.length){el.innerHTML='<div class="empty">暂无训练记录，上传第一张训练照片吧</div>';return}
+  el.innerHTML=workouts.slice().reverse().map(w=>`
+    <div class="wo-card">
+      ${w.photos&&w.photos[0]?`<img src="${w.photos[0]}" onclick="previewImg('${w.photos[0]}')">`:'<div class="ficon">🏋️</div>'}
+      <div class="info">
+        <div class="wt">${w.content|| '普拉提训练'} ${w.interpret?'<span class="tag warn">已解读</span>':'<span class="tag">待解读</span>'}</div>
+        <div class="wd">${w.date} · ${w.photos?.length||0}张照片</div>
+        ${w.muscles?.length?`<div class="muscle-chips">${w.muscles.map(m=>`<span>${m}</span>`).join('')}</div>`:''}
+        ${w.interpret?`<div class="wm" style="margin-top:6px"><b>肌群解读：</b>${w.interpret}</div>`:''}
+        <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+          ${w.photos?.length>1?w.photos.slice(1).map(p=>`<img src="${p}" style="width:44px;height:44px;border-radius:6px;object-fit:cover;cursor:pointer" onclick="previewImg('${p}')">`).join(''):''}
+          <button class="btn sm" onclick="requestMuscle('${w.id}')">🧠 请求肌群解读</button>
+          <button class="btn sm danger" onclick="delWorkout('${w.id}')">删除</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function addWorkout(){
+  const date=$('#woDate').value||todayStr();
+  const content=$('#woContent').value.trim();
+  const files=$('#woFile').files;
+  const photos=[];
+  let pending=files.length;
+  if(!files.length&&!content){toast('请至少上传照片或填写训练内容');return}
+  if(!pending){finish()}
+  else Array.from(files).forEach(f=>{
+    const r=new FileReader();
+    r.onload=async()=>{
+      const compressed=await compressImage(r.result,1200,1600,0.7);
+      photos.push(compressed);
+      if(--pending===0)finish();
+    };
+    r.readAsDataURL(f);
+  });
+  function finish(){
+    workouts.push({id:Date.now()+'',date,content,photos,muscles:[],interpret:''});
+    LS.set('workouts',workouts);renderWorkouts();
+    $('#woDate').value='';$('#woContent').value='';$('#woFile').value='';
+    toast('训练记录已保存');
+  }
+}
+function delWorkout(id){if(confirm('删除此训练记录？')){workouts=workouts.filter(w=>w.id!==id);LS.set('workouts',workouts);renderWorkouts()}}
+let curWoId=null;
+function requestMuscle(id){
+  const w=workouts.find(x=>x.id===id);if(!w)return;
+  curWoId=id;
+  const photoNote=w.photos?.length?`<div class="hint">已附带 ${w.photos.length} 张照片，WorkBuddy 会结合照片和文字判断</div>`:'';
+  $('#muscleDetail').innerHTML=`
+    <p><b>训练日期：</b>${w.date}</p>
+    <p><b>训练内容：</b>${w.content||'（未填写，将主要依据照片判断）'}</p>
+    ${photoNote}
+    <div class="divider"></div>
+    <label>补充说明（可选）</label>
+    <textarea id="muscleExtra" rows="3" placeholder="如：今天教练说重点是腹部，做了3组..."></textarea>
+    <div class="hint">点击「生成解读」后，请在 WorkBuddy 中说「解读训练 ${id}」，我会分析目标肌群与作用并自动填入。</div>`;
+  $('#modalMuscle').classList.add('show');
+}
+function confirmMuscle(){
+  // 标记待解读，提示用户
+  closeModal('modalMuscle');
+  toast('已标记，请在 WorkBuddy 中说「解读训练 '+curWoId+'」');
+}
+
+/* ============ 笔记加密 ============ */
+let noteKey=null; // CryptoKey
+let notesRaw=LS.get('notesEnc',null); // {salt, pwdHash, items:[{iv,ct}]}
+let notesPlain=[];
+let curNoteId=null;
+
+async function sha256(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,'0')).join('')}
+function buf2b64(buf){return btoa(String.fromCharCode(...new Uint8Array(buf)))}
+function b642buf(s){return Uint8Array.from(atob(s),c=>c.charCodeAt(0)).buffer}
+async function deriveKey(pwd,salt){
+  const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pwd),'PBKDF2',false,['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:150000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+}
+async function setNotePwd(){
+  const p=prompt('设置笔记密码（首次设置或修改密码）：\n注意：修改密码后已有笔记需用旧密码解锁后再保存。');
+  if(!p)return;
+  if(p.length<4){toast('密码至少4位');return}
+  if(notesRaw&&notesRaw.items?.length){
+    if(!noteKey){toast('请先用旧密码解锁后再修改密码');return}
+    // 重新加密
+    const salt=crypto.getRandomValues(new Uint8Array(16));
+    const newKey=await deriveKey(p,salt);
+    const newItems=[];
+    for(const n of notesPlain){
+      const iv=crypto.getRandomValues(new Uint8Array(12));
+      const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},newKey,new TextEncoder().encode(JSON.stringify(n)));
+      newItems.push({iv:buf2b64(iv),ct:buf2b64(ct)});
+    }
+    notesRaw={salt:buf2b64(salt),pwdHash:await sha256(p),items:newItems};
+    LS.set('notesEnc',notesRaw);noteKey=newKey;
+    toast('密码已修改，笔记已重新加密');
+  }else{
+    const salt=crypto.getRandomValues(new Uint8Array(16));
+    notesRaw={salt:buf2b64(salt),pwdHash:await sha256(p),items:[]};
+    LS.set('notesEnc',notesRaw);
+    noteKey=await deriveKey(p,salt);
+    notesPlain=[];
+    $('#notesLocked').style.display='none';
+    $('#notesUnlocked').style.display='block';
+    renderNotes();
+    toast('密码已设置，已进入笔记');
+  }
+}
+async function unlockNotes(){
+  if(!notesRaw){toast('请先设置密码');return}
+  const p=$('#notePwd').value;
+  if(!p){toast('请输入密码');return}
+  if(await sha256(p)!==notesRaw.pwdHash){toast('密码错误');return}
+  try{
+    noteKey=await deriveKey(p,b642buf(notesRaw.salt));
+    notesPlain=[];
+    for(const it of notesRaw.items){
+      const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b642buf(it.iv)},noteKey,b642buf(it.ct));
+      notesPlain.push(JSON.parse(new TextDecoder().decode(pt)));
+    }
+    $('#notesLocked').style.display='none';
+    $('#notesUnlocked').style.display='block';
+    $('#notePwd').value='';
+    renderNotes();
+    toast('解锁成功');
+  }catch(e){toast('解密失败：'+e.message)}
+}
+function lockNotes(){
+  noteKey=null;notesPlain=[];
+  $('#notesUnlocked').style.display='none';
+  $('#notesLocked').style.display='block';
+  toast('已锁定');
+}
+function renderNotes(){
+  const el=$('#noteList');
+  if(!notesPlain.length){el.innerHTML='<div class="empty" style="padding:40px 20px"><div style="font-size:36px;margin-bottom:8px">📝</div>暂无笔记<br><span style="font-size:12px">点击右上角「＋ 新笔记」开始记录</span></div>';return}
+  notesPlain.sort((a,b)=>b.date.localeCompare(a.date));
+  el.innerHTML=notesPlain.map(n=>{
+    // 标题为空时用正文首句
+    const firstLine=(n.body||'').split('\n')[0].trim();
+    const displayTitle=n.title||firstLine.slice(0,40)||'无内容';
+    const hasTitle=!!n.title;
+    // 日期格式化
+    const d=new Date(n.date);
+    const dateStr=`${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    // 字数
+    const wordCount=(n.body||'').length;
+    return `
+    <div class="note-item" onclick="openNoteEditor('${n.id}')">
+      <button class="note-del" onclick="event.stopPropagation();delNoteById('${n.id}')" title="删除">×</button>
+      <div class="nt">${displayTitle}</div>
+      <div class="nd">${dateStr}<span class="nd-badge">${wordCount}字</span></div>
+      <div class="np">${(n.body||'').slice(0,160)}</div>
+    </div>`;
+  }).join('');
+}
+function openNoteEditor(id){
+  curNoteId=id||null;
+  const n=id?notesPlain.find(x=>x.id===id):null;
+  $('#noteEditorTitle').textContent=id?'📝 编辑笔记':'📝 新笔记';
+  $('#noteTitle').value=n?.title||'';
+  $('#noteBody').value=n?.body||'';
+  $('#noteDelBtn').style.display=id?'inline-flex':'none';
+  $('#modalNote').classList.add('show');
+}
+async function saveNote(){
+  const title=$('#noteTitle').value.trim(),body=$('#noteBody').value;
+  if(!body.trim()){toast('正文不能为空');return}
+  if(curNoteId){
+    const n=notesPlain.find(x=>x.id===curNoteId);
+    n.title=title;n.body=body;n.date=new Date().toISOString();
+  }else{
+    notesPlain.push({id:Date.now()+'',title,body,date:new Date().toISOString()});
+  }
+  await persistNotes();
+  closeModal('modalNote');renderNotes();toast('已保存并加密');
+}
+async function delNote(){
+  if(!confirm('确定删除此笔记？'))return;
+  notesPlain=notesPlain.filter(n=>n.id!==curNoteId);
+  await persistNotes();closeModal('modalNote');renderNotes();toast('已删除');
+}
+async function delNoteById(id){
+  if(!confirm('确定删除此笔记？'))return;
+  notesPlain=notesPlain.filter(n=>n.id!==id);
+  await persistNotes();renderNotes();toast('已删除');
+}
+async function persistNotes(){
+  const items=[];
+  for(const n of notesPlain){
+    const iv=crypto.getRandomValues(new Uint8Array(12));
+    const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},noteKey,new TextEncoder().encode(JSON.stringify(n)));
+    items.push({iv:buf2b64(iv),ct:buf2b64(ct)});
+  }
+  notesRaw.items=items;LS.set('notesEnc',notesRaw);
+}
+
+/* ============ 初始化 ============ */
+$('#woDate').value=todayStr();
+renderReports();renderMeds();renderCal();renderFinance();renderWorkouts();
+
+/* ============ PWA Service Worker 注册 ============ */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').then(()=>console.log('SW已注册，支持离线')).catch(e=>console.log('SW注册失败:',e));
+}
+</script>
+</body>
+</html>
