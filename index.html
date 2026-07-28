@@ -88,16 +88,32 @@ main{margin-left:200px;padding:24px;padding-top:max(24px,env(safe-area-inset-top
 @media(max-width:768px){
   header.topbar{
     position:fixed;left:0;right:0;bottom:0;top:auto;width:100%;height:auto;
-    flex-direction:row;padding:8px 10px;gap:4px;
+    flex-direction:row;padding:6px 8px;gap:4px;
     border-right:none;border-top:1px solid var(--border);
-    padding-bottom:max(8px,env(safe-area-inset-bottom));
+    padding-bottom:max(6px,env(safe-area-inset-bottom));
+    background:rgba(255,255,255,.96);
+    box-shadow:0 -2px 12px rgba(0,0,0,.06);
   }
   .brand{display:none}
-  nav.tabs{flex-direction:row;justify-content:space-around;flex:1}
-  nav.tabs button{flex-direction:column;gap:2px;padding:6px 8px;font-size:11px;border-radius:10px}
-  nav.tabs button .ico{font-size:20px}
+  nav.tabs{flex-direction:row;justify-content:space-around;flex:1;gap:2px}
+  nav.tabs button{
+    flex-direction:column;gap:2px;padding:8px 4px;font-size:12px;
+    border-radius:10px;flex:1;min-width:0;
+    position:relative;
+  }
+  nav.tabs button .ico{font-size:22px;line-height:1}
+  nav.tabs button span:last-child{font-weight:500}
+  nav.tabs button.active{font-weight:600}
+  nav.tabs button.active::before{
+    content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:24px;height:3px;border-radius:0 0 3px 3px;
+  }
+  nav.tabs button[data-tab="medical"].active::before{background:var(--m-med)}
+  nav.tabs button[data-tab="finance"].active::before{background:var(--m-fin)}
+  nav.tabs button[data-tab="fitness"].active::before{background:var(--m-fit)}
+  nav.tabs button[data-tab="notes"].active::before{background:var(--m-note)}
   .clock{display:none}
-  main{margin-left:0;margin-bottom:64px;padding:16px}
+  main{margin-left:0;margin-bottom:70px;padding:14px}
 }
 
 /* ===== 卡片 ===== */
