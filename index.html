@@ -69,6 +69,8 @@ nav.tabs button[data-tab="finance"].active{color:var(--m-fin);background:var(--m
 nav.tabs button[data-tab="fitness"].active{color:var(--m-fit);background:var(--m-fit-l);border-color:var(--m-fit)}
 nav.tabs button[data-tab="notes"].active{color:var(--m-note);background:var(--m-note-l);border-color:var(--m-note)}
 .clock{color:var(--muted);font-size:11px;font-family:'JetBrains Mono',monospace;text-align:center;padding:8px 4px;border-top:1px solid var(--border);margin-top:auto}
+.backup-btns{display:flex;flex-direction:column;gap:4px;padding-top:8px;border-top:1px solid var(--border);margin-top:4px}
+.backup-btns .btn{font-size:12px;justify-content:center}
 
 /* ===== 布局 ===== */
 main{margin-left:200px;padding:24px;padding-top:max(24px,env(safe-area-inset-top));padding-bottom:max(24px,env(safe-area-inset-bottom))}
@@ -113,7 +115,11 @@ main{margin-left:200px;padding:24px;padding-top:max(24px,env(safe-area-inset-top
   nav.tabs button[data-tab="fitness"].active::before{background:var(--m-fit)}
   nav.tabs button[data-tab="notes"].active::before{background:var(--m-note)}
   .clock{display:none}
+  .backup-btns{display:none}
   main{margin-left:0;margin-bottom:70px;padding:14px}
+  /* 手机端备份按钮浮在右上角 */
+  .mobile-backup{position:fixed;top:max(8px,env(safe-area-inset-top));right:12px;z-index:60;display:flex;gap:4px}
+  .mobile-backup .btn{padding:5px 8px;font-size:11px;background:rgba(255,255,255,.9);backdrop-filter:blur(8px)}
 }
 
 /* ===== 卡片 ===== */
@@ -265,9 +271,19 @@ label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}
     <button data-tab="notes"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a2 2 0 012-2h12a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/><path d="M8 2v20"/><path d="M11 7h6M11 11h6M11 15h4"/></svg></span><span>笔记</span></button>
   </nav>
   <div class="clock" id="clock">--</div>
+  <div class="backup-btns">
+    <button class="btn ghost sm" onclick="exportData()" title="导出备份数据">💾 备份</button>
+    <button class="btn ghost sm" onclick="document.getElementById('importFile').click()" title="导入恢复数据">📂 恢复</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this.files[0])">
+  </div>
 </header>
 
 <main>
+<div class="mobile-backup">
+  <button class="btn ghost sm" onclick="exportData()">💾</button>
+  <button class="btn ghost sm" onclick="document.getElementById('importFile2').click()">📂</button>
+  <input type="file" id="importFile2" accept=".json" style="display:none" onchange="importData(this.files[0])">
+</div>
 
 <!-- ===================== 医疗 ===================== -->
 <section class="panel active" id="panel-medical">
@@ -1124,6 +1140,48 @@ async function persistNotes(){
     items.push({iv:buf2b64(iv),ct:buf2b64(ct)});
   }
   notesRaw.items=items;LS.set('notesEnc',notesRaw);
+}
+
+/* ============ 数据导出/导入 ============ */
+function exportData(){
+  const data={
+    version:2,
+    exportDate:new Date().toISOString(),
+    reports:LS.get('reports',[]),
+    meds:LS.get('meds',[]),
+    checkins:LS.get('checkins',[]),
+    workouts:LS.get('workouts',[]),
+    finance:LS.get('finance',null),
+    notesEnc:LS.get('notesEnc',null)
+  };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`工作台备份_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('备份已导出，请保存到手机文件');
+}
+function importData(file){
+  if(!file){return}
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const data=JSON.parse(r.result);
+      if(!data.version){toast('文件格式不正确');return}
+      if(!confirm('导入将覆盖当前所有数据，确定继续？'))return;
+      if(data.reports)LS.set('reports',data.reports);
+      if(data.meds)LS.set('meds',data.meds);
+      if(data.checkins)LS.set('checkins',data.checkins);
+      if(data.workouts)LS.set('workouts',data.workouts);
+      if(data.finance)LS.set('finance',data.finance);
+      if(data.notesEnc)LS.set('notesEnc',data.notesEnc);
+      toast('数据已导入，即将刷新');
+      setTimeout(()=>location.reload(),1500);
+    }catch(e){toast('导入失败：'+e.message)}
+  };
+  r.readAsText(file);
 }
 
 /* ============ 初始化 ============ */
