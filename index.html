@@ -193,6 +193,14 @@ label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}
 .news-item .nm{color:var(--muted);font-size:12px;line-height:1.5}
 .news-item .nsrc{color:var(--dim);font-size:11px;margin-top:3px}
 .kpi{display:flex;flex-direction:column;gap:2px}
+.kpi-table{display:grid;grid-template-columns:repeat(2,1fr);gap:0}
+.kpi-row{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-bottom:1px solid var(--border);font-size:13px}
+.kpi-row:nth-last-child(-n+2){border-bottom:none}
+.kpi-row:nth-child(odd){border-right:1px solid var(--border)}
+.kpi-lab{color:var(--muted);font-size:12px;min-width:60px}
+.kpi-val{font-weight:600;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--text)}
+.kpi-chg{font-size:12px;font-family:'JetBrains Mono',monospace;min-width:60px;text-align:right}
+@media(max-width:480px){.kpi-table{grid-template-columns:1fr}.kpi-row:nth-child(odd){border-right:none}}
 .kpi .lab{font-size:11px;color:var(--muted)}
 .kpi .val{font-size:20px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text)}
 .kpi .chg{font-size:12px;font-family:'JetBrains Mono',monospace}
@@ -866,14 +874,14 @@ function renderFinance(){
     {lab:'布伦特原油',val:f.oil.brent+'$/桶',chg:f.oil.brentChg},
     {lab:'美元指数',val:f.fx.dxy,chg:f.fx.dxyChg}
   ];
-  $('#kpiGrid').innerHTML=kpis.map(k=>{
+  $('#kpiGrid').innerHTML=`<div class="card" style="grid-column:1/-1"><div class="kpi-table">${kpis.map(k=>{
     const up=!String(k.chg).includes('-');
-    return `<div class="card"><div class="kpi">
-      <div class="lab">${k.lab}</div>
-      <div class="val">${k.val}</div>
-      <div class="chg ${up?'pos':'neg'}">${up?'▲':'▼'} ${k.chg}</div>
-    </div></div>`;
-  }).join('');
+    return `<div class="kpi-row">
+      <span class="kpi-lab">${k.lab}</span>
+      <span class="kpi-val">${k.val}</span>
+      <span class="kpi-chg ${up?'pos':'neg'}">${up?'▲':'▼'}${k.chg}</span>
+    </div>`;
+  }).join('')}</div></div>`;
   // 金价图
   drawGoldChart(f.goldHistory);
   $('#goldHint').textContent=`近7日区间 ${Math.min(...f.goldHistory.map(x=>x.v)).toFixed(0)} ~ ${Math.max(...f.goldHistory.map(x=>x.v)).toFixed(0)} 美元/盎司`;
