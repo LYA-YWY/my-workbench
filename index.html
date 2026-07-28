@@ -28,6 +28,8 @@
   --m-fit-l:#fdf0e8;
   --m-note:#9b6bb5;   /* 笔记-薰衣草紫 */
   --m-note-l:#f4eef8;
+  --m-photo:#e85d8d;  /* 相册-玫粉 */
+  --m-photo-l:#fce8f0;
   --accent:#5b9bd5; --accent-2:#3eb489; --warn:#f6ad55; --danger:#fc8181;
   --pink:#d57ee0; --gold:#f6c343;
 }
@@ -68,6 +70,7 @@ nav.tabs button[data-tab="medical"].active{color:var(--m-med);background:var(--m
 nav.tabs button[data-tab="finance"].active{color:var(--m-fin);background:var(--m-fin-l);border-color:var(--m-fin)}
 nav.tabs button[data-tab="fitness"].active{color:var(--m-fit);background:var(--m-fit-l);border-color:var(--m-fit)}
 nav.tabs button[data-tab="notes"].active{color:var(--m-note);background:var(--m-note-l);border-color:var(--m-note)}
+nav.tabs button[data-tab="photos"].active{color:var(--m-photo);background:var(--m-photo-l);border-color:var(--m-photo)}
 .clock{color:var(--muted);font-size:11px;font-family:'JetBrains Mono',monospace;text-align:center;padding:8px 4px;border-top:1px solid var(--border);margin-top:auto}
 
 /* ===== 布局 ===== */
@@ -112,6 +115,7 @@ main{margin-left:200px;padding:24px;padding-top:max(24px,env(safe-area-inset-top
   nav.tabs button[data-tab="finance"].active::before{background:var(--m-fin)}
   nav.tabs button[data-tab="fitness"].active::before{background:var(--m-fit)}
   nav.tabs button[data-tab="notes"].active::before{background:var(--m-note)}
+  nav.tabs button[data-tab="photos"].active::before{background:var(--m-photo)}
   .clock{display:none}
   main{margin-left:0;margin-bottom:70px;padding:14px}
 }
@@ -137,6 +141,8 @@ main{margin-left:200px;padding:24px;padding-top:max(24px,env(safe-area-inset-top
 #panel-fitness .stat-mini .num{color:var(--m-fit)}
 #panel-notes .panel-head h2{color:var(--m-note)}
 #panel-notes .card{border-left:3px solid var(--m-note)}
+#panel-photos .panel-head h2{color:var(--m-photo)}
+#panel-photos .card{border-left:3px solid var(--m-photo)}
 .lock-screen .lock-ico{color:var(--m-note)}
 
 /* ===== 按钮 / 表单 ===== */
@@ -263,6 +269,7 @@ label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}
     <button data-tab="finance"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8M21 7v6h-6"/></svg></span><span>财经</span></button>
     <button data-tab="fitness"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><rect x="6" y="10" width="2" height="4"/><rect x="16" y="10" width="2" height="4"/><path d="M8 12h8"/></svg></span><span>健身</span></button>
     <button data-tab="notes"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a2 2 0 012-2h12a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/><path d="M8 2v20"/><path d="M11 7h6M11 11h6M11 15h4"/></svg></span><span>笔记</span></button>
+    <button data-tab="photos"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></span><span>相册</span></button>
   </nav>
   <div class="clock" id="clock">--</div>
 </header>
@@ -431,6 +438,37 @@ label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}
       </div>
     </div>
     <div id="noteList"></div>
+  </div>
+</section>
+
+<!-- ===================== 照片存储 ===================== -->
+<section class="panel" id="panel-photos">
+  <div id="photosLocked">
+    <div class="lock-screen">
+      <div class="lock-ico" style="color:var(--m-photo)">🔐</div>
+      <h2 style="font-weight:700;color:var(--m-photo)">私密相册</h2>
+      <p class="muted" style="max-width:340px;font-size:13px">照片使用 AES-GCM 端到端加密存储，密码不存储。忘记密码将无法恢复，请妥善保管。</p>
+      <input type="password" id="photoPwd" placeholder="输入密码解锁" onkeydown="if(event.key==='Enter')unlockPhotos()">
+      <div>
+        <button class="btn primary" style="background:linear-gradient(135deg,var(--m-photo),#d44a7a);border-color:transparent" onclick="unlockPhotos()">解锁</button>
+        <button class="btn ghost" onclick="setPhotoPwd()">设置/修改密码</button>
+      </div>
+      <div class="hint" style="max-width:340px">首次使用请先点「设置/修改密码」创建密码；可与笔记密码不同</div>
+    </div>
+  </div>
+  <div id="photosUnlocked" style="display:none">
+    <div class="panel-head">
+      <h2>🔐 私密相册</h2>
+      <span class="sub">AES-GCM 加密 · 按时间倒序</span>
+      <div style="margin-left:auto;display:flex;gap:6px">
+        <button class="btn primary sm" style="background:linear-gradient(135deg,var(--m-photo),#d44a7a);border-color:transparent" onclick="document.getElementById('photoFileInput').click()">＋ 上传照片</button>
+        <button class="btn ghost sm" onclick="lockPhotos()">🔒 锁定</button>
+      </div>
+      <input type="file" id="photoFileInput" accept="image/*" multiple style="display:none" onchange="uploadPhotos(this.files)">
+    </div>
+    <div class="card">
+      <div id="photoGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px"></div>
+    </div>
   </div>
 </section>
 
@@ -1124,6 +1162,111 @@ async function persistNotes(){
     items.push({iv:buf2b64(iv),ct:buf2b64(ct)});
   }
   notesRaw.items=items;LS.set('notesEnc',notesRaw);
+}
+
+/* ============ 私密相册加密 ============ */
+let photoKey=null;
+let photosRaw=LS.get('photosEnc',null); // {salt,pwdHash,items:[{iv,ct}]}
+let photosPlain=[]; // [{id,name,data,date}]
+
+async function setPhotoPwd(){
+  const p=prompt('设置相册密码（首次或修改）：');
+  if(!p)return;
+  if(p.length<4){toast('密码至少4位');return}
+  if(photosRaw&&photosRaw.items?.length){
+    if(!photoKey){toast('请先用旧密码解锁再修改');return}
+    const salt=crypto.getRandomValues(new Uint8Array(16));
+    const newKey=await deriveKey(p,salt);
+    const newItems=[];
+    for(const ph of photosPlain){
+      const iv=crypto.getRandomValues(new Uint8Array(12));
+      const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},newKey,new TextEncoder().encode(JSON.stringify(ph)));
+      newItems.push({iv:buf2b64(iv),ct:buf2b64(ct)});
+    }
+    photosRaw={salt:buf2b64(salt),pwdHash:await sha256(p),items:newItems};
+    LS.set('photosEnc',photosRaw);photoKey=newKey;
+    toast('相册密码已修改');
+  }else{
+    const salt=crypto.getRandomValues(new Uint8Array(16));
+    photosRaw={salt:buf2b64(salt),pwdHash:await sha256(p),items:[]};
+    LS.set('photosEnc',photosRaw);
+    photoKey=await deriveKey(p,salt);
+    photosPlain=[];
+    $('#photosLocked').style.display='none';
+    $('#photosUnlocked').style.display='block';
+    renderPhotos();
+    toast('相册密码已设置');
+  }
+}
+async function unlockPhotos(){
+  if(!photosRaw){toast('请先设置密码');return}
+  const p=$('#photoPwd').value;
+  if(!p){toast('请输入密码');return}
+  if(await sha256(p)!==photosRaw.pwdHash){toast('密码错误');return}
+  try{
+    photoKey=await deriveKey(p,b642buf(photosRaw.salt));
+    photosPlain=[];
+    for(const it of photosRaw.items){
+      const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b642buf(it.iv)},photoKey,b642buf(it.ct));
+      photosPlain.push(JSON.parse(new TextDecoder().decode(pt)));
+    }
+    $('#photosLocked').style.display='none';
+    $('#photosUnlocked').style.display='block';
+    $('#photoPwd').value='';
+    renderPhotos();
+    toast('相册已解锁');
+  }catch(e){toast('解密失败：'+e.message)}
+}
+function lockPhotos(){
+  photoKey=null;photosPlain=[];
+  $('#photosUnlocked').style.display='none';
+  $('#photosLocked').style.display='block';
+  toast('已锁定');
+}
+function renderPhotos(){
+  const el=$('#photoGrid');
+  if(!photosPlain.length){el.innerHTML='<div class="empty" style="grid-column:1/-1;padding:30px"><div style="font-size:36px;margin-bottom:8px">📷</div>暂无照片<br><span style="font-size:12px">点右上角「＋ 上传照片」添加</span></div>';return}
+  photosPlain.sort((a,b)=>b.date.localeCompare(a.date));
+  el.innerHTML=photosPlain.map(p=>`
+    <div style="position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;cursor:pointer;background:var(--card-2)" onclick="previewImg('${p.data}')">
+      <img src="${p.data}" style="width:100%;height:100%;object-fit:cover">
+      <button class="btn sm danger" style="position:absolute;top:4px;right:4px;padding:3px 7px;font-size:11px;min-width:0" onclick="event.stopPropagation();delPhoto('${p.id}')">×</button>
+      <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.6));color:#fff;font-size:9px;padding:8px 4px 3px;font-family:'JetBrains Mono',monospace">${p.date.slice(0,10)}</div>
+    </div>`).join('');
+}
+async function uploadPhotos(files){
+  if(!files.length)return;
+  if(!photoKey){toast('请先解锁相册');return}
+  let pending=files.length;
+  const newPhotos=[];
+  for(const f of Array.from(files)){
+    const r=new FileReader();
+    r.onload=async()=>{
+      const compressed=await compressImage(r.result,1200,1600,0.7);
+      newPhotos.push({id:Date.now()+'_'+Math.random().toString(36).slice(2,6),name:f.name,data:compressed,date:new Date().toISOString()});
+      if(--pending===0){
+        photosPlain.push(...newPhotos);
+        await persistPhotos();
+        renderPhotos();
+        toast('已加密保存 '+newPhotos.length+' 张照片');
+      }
+    };
+    r.readAsDataURL(f);
+  }
+}
+async function delPhoto(id){
+  if(!confirm('确定删除此照片？'))return;
+  photosPlain=photosPlain.filter(p=>p.id!==id);
+  await persistPhotos();renderPhotos();toast('已删除');
+}
+async function persistPhotos(){
+  const items=[];
+  for(const ph of photosPlain){
+    const iv=crypto.getRandomValues(new Uint8Array(12));
+    const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},photoKey,new TextEncoder().encode(JSON.stringify(ph)));
+    items.push({iv:buf2b64(iv),ct:buf2b64(ct)});
+  }
+  photosRaw.items=items;LS.set('photosEnc',photosRaw);
 }
 
 /* ============ 初始化 ============ */
