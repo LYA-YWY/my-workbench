@@ -267,12 +267,13 @@ label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}
       <div class="row" style="margin-bottom:12px">
         <div class="no-flex"><button class="btn sm" onclick="shiftCal(-1)">‹ 上月</button></div>
         <div class="no-flex"><button class="btn sm" onclick="shiftCal(1)">下月 ›</button></div>
-        <div class="no-flex"><button class="btn primary sm" onclick="toggleToday()">今日打卡</button></div>
+        <div class="no-flex"><button class="btn primary sm" onclick="openCheckinModal()">＋ 记录用药</button></div>
         <div style="flex:0 0 auto;align-self:center;color:var(--muted);font-size:13px" id="streakInfo"></div>
       </div>
       <div class="cal-head" id="calHead"></div>
       <div class="calendar" id="calendar"></div>
-      <div class="hint">点击日期可手动标记/取消；连续打卡天数会自动统计</div>
+      <div class="hint">点击日期可查看当日用药记录；每顿药的时间、药名、剂量都会记录</div>
+      <div id="todayCheckins" style="margin-top:14px"></div>
     </div>
   </div>
 </section>
@@ -427,6 +428,35 @@ label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}
 <!-- 图片预览 -->
 <div class="img-preview-mask" id="imgPreview" onclick="this.classList.remove('show')">
   <img id="imgPreviewSrc">
+</div>
+
+<!-- 模态框：用药打卡 -->
+<div class="modal-mask" id="modalCheckin">
+  <div class="modal" style="max-width:480px">
+    <h3 style="color:var(--m-med)">💊 记录用药</h3>
+    <div class="row">
+      <div><label>服药时间</label><input type="datetime-local" id="ckTime"></div>
+    </div>
+    <div style="margin-top:10px"><label>药名（可多选）</label><div id="ckMedChips" style="display:flex;flex-wrap:wrap;gap:6px"></div></div>
+    <div style="margin-top:8px"><label>或手动输入药名</label><input id="ckMedName" placeholder="如：维生素D3"></div>
+    <div class="row" style="margin-top:8px">
+      <div><label>剂量</label><input id="ckDose" placeholder="如：1000IU"></div>
+      <div><label>这顿备注（可选）</label><input id="ckNote" placeholder="如：饭后服用"></div>
+    </div>
+    <div class="foot">
+      <button class="btn sm" onclick="closeModal('modalCheckin')">取消</button>
+      <button class="btn primary sm" onclick="saveCheckin()">保存记录</button>
+    </div>
+  </div>
+</div>
+
+<!-- 模态框：查看某日用药记录 -->
+<div class="modal-mask" id="modalDayLog">
+  <div class="modal" style="max-width:480px">
+    <h3 style="color:var(--m-med)" id="dayLogTitle">📅 用药记录</h3>
+    <div id="dayLogContent"></div>
+    <div class="foot"><button class="btn sm" onclick="closeModal('modalDayLog')">关闭</button></div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -588,8 +618,14 @@ function delMed(id){meds=meds.filter(m=>m.id!==id);LS.set('meds',meds);renderMed
 
 /* ============ 医疗：打卡日历 ============ */
 let calCursor=new Date();
+// checkins 改为对象数组：{id,time,meds:[{name,dose}],note}
 let checkins=LS.get('checkins',[]);
+// 兼容旧数据（旧的 ISO 字符串）
+checkins=checkins.map(c=>typeof c==='string'?{id:Date.now()+Math.random(),time:c,meds:[],note:'旧记录'}:c);
 function isSameDay(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate()}
+function getCheckinsOfDay(date){
+  return checkins.filter(c=>isSameDay(new Date(c.time),date)).sort((a,b)=>new Date(a.time)-new Date(b.time));
+}
 function renderCal(){
   const y=calCursor.getFullYear(),m=calCursor.getMonth();
   $('#calMonthLabel').textContent=`${y}年${m+1}月`;
@@ -602,24 +638,100 @@ function renderCal(){
   const today=new Date();
   for(let d=1;d<=days;d++){
     const dt=new Date(y,m,d);
-    const done=checkins.some(c=>isSameDay(new Date(c),dt));
+    const dayLog=getCheckinsOfDay(dt);
+    const done=dayLog.length>0;
     const isToday=isSameDay(dt,today);
-    html+=`<div class="cal-cell ${done?'done':''} ${isToday?'today':''}" onclick="toggleDate('${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}')">
-      <div class="d">${d}</div><div class="m">${done?'已打卡':''}</div></div>`;
+    html+=`<div class="cal-cell ${done?'done':''} ${isToday?'today':''}" onclick="viewDayLog('${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}')">
+      <div class="d">${d}</div><div class="m">${done?dayLog.length+'次':''}</div></div>`;
   }
   $('#calendar').innerHTML=html;
   // 连续天数
   let streak=0;let cur=new Date(today);
-  while(checkins.some(c=>isSameDay(new Date(c),cur))){streak++;cur.setDate(cur.getDate()-1)}
+  while(getCheckinsOfDay(cur).length>0){streak++;cur.setDate(cur.getDate()-1)}
   $('#streakInfo').textContent=`🔥 连续打卡 ${streak} 天`;
+  // 今日记录
+  renderTodayCheckins();
 }
-function toggleDate(s){
-  const dt=new Date(s);
-  const i=checkins.findIndex(c=>isSameDay(new Date(c),dt));
-  if(i>=0)checkins.splice(i,1);else checkins.push(dt.toISOString());
-  LS.set('checkins',checkins);renderCal();
+function renderTodayCheckins(){
+  const todayLog=getCheckinsOfDay(new Date());
+  const el=$('#todayCheckins');
+  if(!todayLog.length){el.innerHTML='<div class="empty" style="padding:16px">今日暂无用药记录，点「＋ 记录用药」开始</div>';return}
+  el.innerHTML=`<div style="font-size:13px;font-weight:600;color:var(--m-med);margin-bottom:8px">📋 今日用药记录（${todayLog.length}次）</div>`+
+    todayLog.map(c=>{
+      const t=new Date(c.time);
+      const tStr=`${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+      const medStr=c.meds.map(m=>`<span style="display:inline-block;padding:1px 8px;border-radius:10px;background:var(--m-med-l);color:var(--m-med);font-size:11px;margin:2px 2px">${m.name}${m.dose?' '+m.dose:''}</span>`).join('');
+      return `<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#f7fafc;border:1px solid var(--border);border-radius:10px;margin-bottom:6px">
+        <span style="font-weight:600;color:var(--m-med);font-size:13px;min-width:40px">${tStr}</span>
+        <div style="flex:1">${medStr}${c.note?`<div style="font-size:11px;color:var(--muted);margin-top:2px">${c.note}</div>`:''}</div>
+        <button class="btn sm danger" onclick="delCheckin('${c.id}')">×</button>
+      </div>`;
+    }).join('');
 }
-function toggleToday(){toggleDate(todayStr())}
+let selectedMeds=[];
+function openCheckinModal(){
+  // 默认时间为现在
+  const now=new Date();
+  const localISO=new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,16);
+  $('#ckTime').value=localISO;
+  // 从用药记录生成快捷选择
+  const chips=$('#ckMedChips');
+  selectedMeds=[];
+  if(meds.length){
+    chips.innerHTML=meds.map(m=>`<button class="btn sm" data-med="${m.name}" data-dose="${m.dose||''}" onclick="toggleMedChip(this)">${m.name}</button>`).join('');
+  }else{
+    chips.innerHTML='<span class="hint">暂无用药记录，请手动输入</span>';
+  }
+  $('#ckMedName').value='';$('#ckDose').value='';$('#ckNote').value='';
+  $('#modalCheckin').classList.add('show');
+}
+function toggleMedChip(btn){
+  const name=btn.dataset.med,dose=btn.dataset.dose;
+  const i=selectedMeds.findIndex(m=>m.name===name);
+  if(i>=0){selectedMeds.splice(i,1);btn.style.background='';btn.style.color='';btn.style.borderColor=''}
+  else{selectedMeds.push({name,dose});btn.style.background='var(--m-med-l)';btn.style.color='var(--m-med)';btn.style.borderColor='var(--m-med)'}
+}
+function saveCheckin(){
+  const time=$('#ckTime').value;
+  if(!time){toast('请选择服药时间');return}
+  const note=$('#ckNote').value.trim();
+  // 合并选中的药 + 手动输入
+  const medName=$('#ckMedName').value.trim();
+  const medDose=$('#ckDose').value.trim();
+  const allMeds=[...selectedMeds];
+  if(medName)allMeds.push({name:medName,dose:medDose});
+  if(!allMeds.length){toast('请选择或输入药名');return}
+  checkins.push({id:Date.now()+'_'+Math.random().toString(36).slice(2,6),time:new Date(time).toISOString(),meds:allMeds,note});
+  LS.set('checkins',checkins);
+  closeModal('modalCheckin');renderCal();
+  toast('已记录 '+allMeds.length+' 种药');
+}
+function delCheckin(id){
+  if(!confirm('删除这条用药记录？'))return;
+  checkins=checkins.filter(c=>c.id!==id);
+  LS.set('checkins',checkins);renderCal();toast('已删除');
+}
+function viewDayLog(dateStr){
+  const dt=new Date(dateStr);
+  const log=getCheckinsOfDay(dt);
+  const today=new Date();const isToday=isSameDay(dt,today);
+  $('#dayLogTitle').textContent=`📅 ${dt.getMonth()+1}月${dt.getDate()}日 用药记录${isToday?'（今天）':''}`;
+  if(!log.length){
+    $('#dayLogContent').innerHTML=`<div class="empty">当天无用药记录</div>`;
+  }else{
+    $('#dayLogContent').innerHTML=log.map(c=>{
+      const t=new Date(c.time);
+      const tStr=`${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+      const medStr=c.meds.map(m=>`<span style="display:inline-block;padding:2px 8px;border-radius:10px;background:var(--m-med-l);color:var(--m-med);font-size:12px;margin:2px">${m.name}${m.dose?' '+m.dose:''}</span>`).join('');
+      return `<div style="padding:10px;background:#f7fafc;border:1px solid var(--border);border-radius:10px;margin-bottom:8px">
+        <div style="font-weight:600;color:var(--m-med);font-size:14px;margin-bottom:4px">⏰ ${tStr}</div>
+        <div>${medStr}</div>
+        ${c.note?`<div style="font-size:12px;color:var(--muted);margin-top:4px">📝 ${c.note}</div>`:''}
+      </div>`;
+    }).join('');
+  }
+  $('#modalDayLog').classList.add('show');
+}
 function shiftCal(n){calCursor.setMonth(calCursor.getMonth()+n);renderCal()}
 
 /* ============ 财经 ============ */
