@@ -19,15 +19,15 @@
   --bg:#f4f7fa; --bg-2:#ffffff; --card:#ffffff; --card-2:#f0f4f8;
   --border:#e2e8f0; --text:#2d3748; --muted:#718096; --dim:#a0aec0;
   --radius:14px;
-  /* 模块主题色 */
-  --m-med:#5b9bd5;    /* 医疗-清新蓝 */
-  --m-med-l:#e8f1fa;
-  --m-fin:#3eb489;    /* 财经-清新绿 */
-  --m-fin-l:#e6f7f0;
-  --m-fit:#f0936b;    /* 健身-清新橙 */
-  --m-fit-l:#fdeee6;
-  --m-note:#b07cc6;   /* 笔记-清新紫 */
-  --m-note-l:#f3edf8;
+  /* 模块主题色（柔和清新） */
+  --m-med:#4a90d9;    /* 医疗-湖水蓝 */
+  --m-med-l:#eaf3fb;
+  --m-fin:#3eb489;    /* 财经-薄荷绿 */
+  --m-fin-l:#e8f7f1;
+  --m-fit:#e8956b;    /* 健身-暖橘 */
+  --m-fit-l:#fdf0e8;
+  --m-note:#9b6bb5;   /* 笔记-薰衣草紫 */
+  --m-note-l:#f4eef8;
   --accent:#5b9bd5; --accent-2:#3eb489; --warn:#f6ad55; --danger:#fc8181;
   --pink:#d57ee0; --gold:#f6c343;
 }
@@ -196,6 +196,14 @@ label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}
 .insight ul{padding-left:18px;font-size:13px;color:var(--text)}
 .insight li{margin-bottom:5px;line-height:1.6}
 .insight li b{color:var(--m-fin)}
+.sector-card{background:#f7fafc;border:1px solid var(--border);border-radius:10px;padding:12px;border-left:3px solid var(--m-fin)}
+.sector-card .s-name{font-weight:600;font-size:14px;color:var(--m-fin);margin-bottom:4px;display:flex;align-items:center;justify-content:space-between}
+.sector-card .s-tag{font-size:10px;padding:1px 7px;border-radius:10px;font-weight:500}
+.sector-card .s-tag.hot{background:#fef0e7;color:var(--m-fit)}
+.sector-card .s-tag.steady{background:var(--m-fin-l);color:var(--m-fin)}
+.sector-card .s-tag.careful{background:#fef0f0;color:var(--danger)}
+.sector-card .s-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.sector-card .s-why{font-size:11px;color:var(--dim);margin-top:4px}
 
 /* ===== 健身 ===== */
 .workout-log{display:flex;flex-direction:column;gap:10px;max-height:380px;overflow:auto}
@@ -251,10 +259,10 @@ label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}
 <header class="topbar">
   <div class="brand"><span class="dot"></span>AYY 工作台<small>v1.0 · 本地私有</small></div>
   <nav class="tabs">
-    <button class="active" data-tab="medical"><span class="ico">🏥</span><span>医疗</span></button>
-    <button data-tab="finance"><span class="ico">📈</span><span>财经</span></button>
-    <button data-tab="fitness"><span class="ico">💪</span><span>健身</span></button>
-    <button data-tab="notes"><span class="ico">🔒</span><span>笔记</span></button>
+    <button class="active" data-tab="medical"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span><span>医疗</span></button>
+    <button data-tab="finance"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8M21 7v6h-6"/></svg></span><span>财经</span></button>
+    <button data-tab="fitness"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><rect x="6" y="10" width="2" height="4"/><rect x="16" y="10" width="2" height="4"/><path d="M8 12h8"/></svg></span><span>健身</span></button>
+    <button data-tab="notes"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a2 2 0 012-2h12a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/><path d="M8 2v20"/><path d="M11 7h6M11 11h6M11 15h4"/></svg></span><span>笔记</span></button>
   </nav>
   <div class="clock" id="clock">--</div>
 </header>
@@ -345,6 +353,13 @@ label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}
         <ul id="insightList"></ul>
       </div>
     </div>
+  </div>
+
+  <!-- 投资行业推荐 -->
+  <div class="card" style="margin-top:16px">
+    <h3><span class="ico">🎯</span>投资行业推荐</h3>
+    <div class="grid g-3" id="sectorGrid"></div>
+    <div class="hint" style="margin-top:10px">以上为基于当日市场热点的行业方向梳理，仅供参考，不构成投资建议。投资有风险，入市需谨慎。</div>
   </div>
 </section>
 
@@ -809,6 +824,14 @@ const BUILTIN_FINANCE = {
     "<b>人民币升值利好进口与海外消费</b>：在岸人民币6.7702，美元走弱背景下，海淘、留学换汇成本下降。",
     "<b>LPR维持3.0%/3.5%，房贷利率低位</b>：5年期LPR 3.5%处于低位，刚需购房贷款成本较低，存量房贷可关注重定价机会。",
     "<b>国债收益率下行，锁定长期收益</b>：10年期国债1.724%，偏好稳健者可关注长债基金，但需注意利率反弹风险。"
+  ],
+  sectors:[
+    {name:"半导体/存储芯片",tag:"hot",reason:"长鑫科技上市激活产业链，存储芯片国产替代加速",how:"相关ETF或龙头个股，仓位控制在10%以内"},
+    {name:"黄金",tag:"steady",reason:"金价高位但长期避险价值仍在，短期波动加大",how:"定投黄金ETF/积金，分批买入，避免追高"},
+    {name:"航空/物流",tag:"hot",reason:"油价大跌直接降低运营成本，人民币升值利好出境游",how:"航空股或物流ETF，受益油价下行"},
+    {name:"国债/债券基金",tag:"steady",reason:"收益率下行，长债价格上涨，LPR低位维持",how:"长债基金或国债ETF，适合稳健配置"},
+    {name:"存储/算力硬件",tag:"hot",reason:"AI算力需求持续，英伟达为OpenAI提供融资担保",how:"算力ETF，关注龙头但注意回调风险"},
+    {name:"新能源车/混动",tag:"careful",reason:"大众否认呼吁对中国混动加税，行业政策不确定性仍存",how:"观望为主，关注政策落地后再考虑"}
   ]
 };
 let financeData=LS.get('finance',null)||BUILTIN_FINANCE;
@@ -842,6 +865,16 @@ function renderFinance(){
   $('#finNews').innerHTML=f.newsFinance.map(n=>`<div class="news-item"><div class="nt">${n.t}</div><div class="nm">${n.m}</div><div class="nsrc">${n.s||''}</div></div>`).join('');
   $('#socNews').innerHTML=f.newsSocial.map(n=>`<div class="news-item"><div class="nt">${n.t}</div><div class="nm">${n.m}</div></div>`).join('');
   $('#insightList').innerHTML=f.insights.map(i=>`<li>${i}</li>`).join('');
+  // 行业推荐
+  const tagMap={hot:{lab:'热门',cls:'hot'},steady:{lab:'稳健',cls:'steady'},careful:{lab:'谨慎',cls:'careful'}};
+  $('#sectorGrid').innerHTML=(f.sectors||[]).map(s=>{
+    const t=tagMap[s.tag]||tagMap.steady;
+    return `<div class="sector-card">
+      <div class="s-name">${s.name}<span class="s-tag ${t.cls}">${t.lab}</span></div>
+      <div class="s-desc">${s.reason}</div>
+      <div class="s-why">💡 ${s.how}</div>
+    </div>`;
+  }).join('');
 }
 function drawGoldChart(data){
   const c=$('#goldChart'),ctx=c.getContext('2d');
