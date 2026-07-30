@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#f4f7fa">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AYY">
+<meta name="mobile-web-app-capable" content="yes">
+<title>AYY 工作台</title>
+
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link rel="preconnect" href="data:,">
+<link  rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f7fa; --bg-2:#ffffff; --card:#ffffff; --card-2:#f0f4f8;
+  --border:#e2e8f0; --text:#2d3748; --muted:#718096; --dim:#a0aec0;
+  --radius:14px;
+  /* 模块主题色（柔和清新） */
+  --m-med:#4a90d9;    /* 医疗-湖水蓝 */
+  --m-med-l:#eaf3fb;
+  --m-fin:#3eb489;    /* 财经-薄荷绿 */
+  --m-fin-l:#e8f7f1;
+  --m-fit:#e8956b;    /* 健身-暖橘 */
+  --m-fit-l:#fdf0e8;
+  --m-note:#9b6bb5;   /* 笔记-薰衣草紫 */
+  --m-note-l:#f4eef8;
+  --accent:#5b9bd5; --accent-2:#3eb489; --warn:#f6ad55; --danger:#fc8181;
+  --pink:#d57ee0; --gold:#f6c343;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Noto Sans SC',-apple-system,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.6;
+  background-image:radial-gradient(1200px 600px at 80% -10%, rgba(91,155,213,.07), transparent),
+                   radial-gradient(900px 500px at -10% 110%, rgba(62,180,137,.06), transparent);
+  background-attachment:fixed;
+}
+.mono{font-family:'JetBrains Mono',monospace}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ===== 侧边栏 ===== */
+header.topbar{
+  position:fixed;left:0;top:0;bottom:0;width:200px;z-index:50;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(14px);
+  border-right:1px solid var(--border);
+  padding:20px 14px;display:flex;flex-direction:column;gap:6px;
+  padding-top:max(20px,env(safe-area-inset-top));
+  padding-bottom:max(20px,env(safe-area-inset-bottom));
+  overflow-y:auto;
+}
+.brand{font-weight:700;font-size:16px;display:flex;align-items:center;gap:8px;color:var(--text);margin-bottom:20px;padding:0 6px}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--m-med),var(--m-fin));box-shadow:0 0 10px rgba(91,155,213,.4);flex-shrink:0}
+.brand small{color:var(--muted);font-weight:400;font-size:10px;margin-left:2px;display:block;margin-top:2px}
+nav.tabs{display:flex;flex-direction:column;gap:4px;flex:1}
+nav.tabs button{
+  background:transparent;border:1.5px solid transparent;color:var(--muted);
+  padding:12px 14px;border-radius:12px;cursor:pointer;font-size:14px;font-family:inherit;
+  transition:.25s;display:flex;align-items:center;gap:8px;text-align:left;justify-content:flex-start;
+}
+nav.tabs button:hover{background:var(--card-2)}
+nav.tabs button[data-tab="medical"].active{color:var(--m-med);background:var(--m-med-l);border-color:var(--m-med)}
+nav.tabs button[data-tab="finance"].active{color:var(--m-fin);background:var(--m-fin-l);border-color:var(--m-fin)}
+nav.tabs button[data-tab="fitness"].active{color:var(--m-fit);background:var(--m-fit-l);border-color:var(--m-fit)}
+nav.tabs button[data-tab="notes"].active{color:var(--m-note);background:var(--m-note-l);border-color:var(--m-note)}
+.clock{color:var(--muted);font-size:11px;font-family:'JetBrains Mono',monospace;text-align:center;padding:8px 4px;border-top:1px solid var(--border);margin-top:auto}
+.backup-btns{display:flex;flex-direction:column;gap:4px;padding-top:8px;border-top:1px solid var(--border);margin-top:4px}
+.backup-btns .btn{font-size:12px;justify-content:center}
+
+/* ===== 布局 ===== */
+main{margin-left:200px;padding:24px;padding-top:max(24px,env(safe-area-inset-top));padding-bottom:max(24px,env(safe-area-inset-bottom))}
+.panel{display:none;animation:fade .3s ease}
+.panel.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.panel-head{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.panel-head h2{font-size:22px;font-weight:700}
+.panel-head .sub{color:var(--muted);font-size:13px}
+.grid{display:grid;gap:16px}
+.g-2{grid-template-columns:repeat(2,1fr)}
+.g-3{grid-template-columns:repeat(3,1fr)}
+.g-4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:980px){.g-3,.g-4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:680px){.g-2,.g-3,.g-4{grid-template-columns:1fr}}
+/* 手机端：侧边栏改为底部导航 */
+@media(max-width:768px){
+  header.topbar{
+    position:fixed;left:0;right:0;bottom:0;top:auto;width:100%;height:auto;
+    flex-direction:row;padding:6px 8px;gap:4px;
+    border-right:none;border-top:1px solid var(--border);
+    padding-bottom:max(6px,env(safe-area-inset-bottom));
+    background:rgba(255,255,255,.96);
+    box-shadow:0 -2px 12px rgba(0,0,0,.06);
+  }
+  .brand{display:none}
+  nav.tabs{flex-direction:row;justify-content:space-around;flex:1;gap:2px}
+  nav.tabs button{
+    flex-direction:column;gap:2px;padding:8px 4px;font-size:12px;
+    border-radius:10px;flex:1;min-width:0;
+    position:relative;
+  }
+  nav.tabs button .ico{font-size:22px;line-height:1}
+  nav.tabs button span:last-child{font-weight:500}
+  nav.tabs button.active{font-weight:600}
+  nav.tabs button.active::before{
+    content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:24px;height:3px;border-radius:0 0 3px 3px;
+  }
+  nav.tabs button[data-tab="medical"].active::before{background:var(--m-med)}
+  nav.tabs button[data-tab="finance"].active::before{background:var(--m-fin)}
+  nav.tabs button[data-tab="fitness"].active::before{background:var(--m-fit)}
+  nav.tabs button[data-tab="notes"].active::before{background:var(--m-note)}
+  .clock{display:none}
+  .backup-btns{display:none}
+  main{margin-left:0;margin-bottom:70px;padding:14px}
+  /* 手机端备份按钮浮在右上角 */
+  .mobile-backup{position:fixed;top:max(8px,env(safe-area-inset-top));right:12px;z-index:60;display:flex;gap:4px}
+  .mobile-backup .btn{padding:5px 8px;font-size:11px;background:rgba(255,255,255,.9);backdrop-filter:blur(8px)}
+}
+
+/* ===== 卡片 ===== */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card h3{font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card h3 .ico{font-size:18px}
+.muted{color:var(--muted)}.dim{color:var(--dim)}
+.tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;background:var(--card-2);color:var(--muted);border:1px solid var(--border)}
+.tag.up{color:var(--m-fin);border-color:rgba(62,180,137,.3);background:var(--m-fin-l)}
+.tag.down{color:var(--danger);border-color:rgba(252,129,129,.3);background:#fef0f0}
+.tag.warn{color:var(--warn);border-color:rgba(246,173,85,.3);background:#fef5e7}
+
+/* ===== 模块主题色 ===== */
+#panel-medical .panel-head h2{color:var(--m-med)}
+#panel-medical .card{border-left:3px solid var(--m-med)}
+#panel-finance .panel-head h2{color:var(--m-fin)}
+#panel-finance .card{border-left:3px solid var(--m-fin)}
+#panel-finance .kpi .val{color:var(--text)}
+#panel-fitness .panel-head h2{color:var(--m-fit)}
+#panel-fitness .card{border-left:3px solid var(--m-fit)}
+#panel-fitness .stat-mini .num{color:var(--m-fit)}
+#panel-notes .panel-head h2{color:var(--m-note)}
+#panel-notes .card{border-left:3px solid var(--m-note)}
+.lock-screen .lock-ico{color:var(--m-note)}
+
+/* ===== 按钮 / 表单 ===== */
+.btn{background:var(--card-2);border:1px solid var(--border);color:var(--text);padding:9px 16px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:13px;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--accent);background:#e6f0fa}
+.btn.primary{background:linear-gradient(135deg,var(--m-med),#4a8bc2);border-color:transparent;color:#fff}
+.btn.primary:hover{filter:brightness(1.05);background:linear-gradient(135deg,var(--m-med),#4a8bc2)}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--danger);border-color:rgba(252,129,129,.3)}
+.btn.danger:hover{background:#fef0f0}
+.btn.sm{padding:6px 10px;font-size:12px}
+input,textarea,select{background:#f7fafc;border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:10px;font-family:inherit;font-size:13px;width:100%}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--m-med);background:#fff;box-shadow:0 0 0 3px rgba(91,155,213,.12)}
+textarea{resize:vertical;min-height:80px}
+label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.row>*{flex:1;min-width:140px}
+.row .no-flex{flex:0 0 auto}
+
+/* ===== 医疗：打卡日历 ===== */
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal-cell{aspect-ratio:1;background:#f7fafc;border:1px solid var(--border);border-radius:8px;padding:6px;font-size:11px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:.2s;position:relative}
+.cal-cell:hover{border-color:var(--m-med);background:var(--m-med-l)}
+.cal-cell.done{background:var(--m-fin-l);border-color:rgba(62,180,137,.4)}
+.cal-cell.done::after{content:'✓';position:absolute;top:3px;right:5px;color:var(--m-fin);font-size:13px}
+.cal-cell.today{box-shadow:0 0 0 2px var(--m-med) inset}
+.cal-cell .d{font-weight:700;color:var(--text)}
+.cal-cell .m{font-size:9px;color:var(--m-fin)}
+.cal-head{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px;text-align:center;color:var(--dim);font-size:11px}
+
+/* 文件列表 */
+.file-list{display:flex;flex-direction:column;gap:8px;max-height:260px;overflow:auto}
+.file-item{display:flex;align-items:center;gap:10px;padding:9px 10px;background:#f7fafc;border:1px solid var(--border);border-radius:10px;font-size:13px}
+.file-item .fname{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+.file-item .fdate{color:var(--dim);font-size:11px;font-family:'JetBrains Mono',monospace}
+.thumb{width:48px;height:48px;border-radius:8px;object-fit:cover;background:var(--card-2)}
+.file-item .ficon{width:48px;height:48px;border-radius:8px;background:var(--m-med-l);display:flex;align-items:center;justify-content:center;font-size:22px}
+
+/* 用药记录列表 */
+.med-item{display:flex;align-items:center;gap:10px;padding:10px;background:#f7fafc;border:1px solid var(--border);border-radius:10px;margin-bottom:8px}
+.med-item .name{font-weight:500;flex:1;color:var(--text)}
+.med-item .dose{color:var(--muted);font-size:12px}
+
+/* ===== 财经 ===== */
+.news-item{padding:11px 0;border-bottom:1px solid var(--border)}
+.news-item:last-child{border:none}
+.news-item .nt{font-weight:500;font-size:14px;margin-bottom:3px;color:var(--text)}
+.news-item .nm{color:var(--muted);font-size:12px;line-height:1.5}
+.news-item .nsrc{color:var(--dim);font-size:11px;margin-top:3px}
+.kpi{display:flex;flex-direction:column;gap:2px}
+.kpi-table{display:grid;grid-template-columns:repeat(2,1fr);gap:0}
+.kpi-row{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-bottom:1px solid var(--border);font-size:13px}
+.kpi-row:nth-last-child(-n+2){border-bottom:none}
+.kpi-row:nth-child(odd){border-right:1px solid var(--border)}
+.kpi-lab{color:var(--muted);font-size:12px;min-width:60px}
+.kpi-val{font-weight:600;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--text)}
+.kpi-chg{font-size:12px;font-family:'JetBrains Mono',monospace;min-width:60px;text-align:right}
+@media(max-width:480px){.kpi-table{grid-template-columns:1fr}.kpi-row:nth-child(odd){border-right:none}}
+.kpi .lab{font-size:11px;color:var(--muted)}
+.kpi .val{font-size:20px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text)}
+.kpi .chg{font-size:12px;font-family:'JetBrains Mono',monospace}
+.pos{color:var(--m-fin)}.neg{color:var(--danger)}
+.insight{background:linear-gradient(135deg,rgba(62,180,137,.08),rgba(91,155,213,.06));border:1px solid rgba(62,180,137,.2);border-radius:12px;padding:14px;margin-top:8px}
+.insight h4{font-size:13px;color:var(--m-fin);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.insight ul{padding-left:18px;font-size:13px;color:var(--text)}
+.insight li{margin-bottom:5px;line-height:1.6}
+.insight li b{color:var(--m-fin)}
+.sector-card{background:#f7fafc;border:1px solid var(--border);border-radius:10px;padding:12px;border-left:3px solid var(--m-fin)}
+.sector-card .s-name{font-weight:600;font-size:14px;color:var(--m-fin);margin-bottom:4px;display:flex;align-items:center;justify-content:space-between}
+.sector-card .s-tag{font-size:10px;padding:1px 7px;border-radius:10px;font-weight:500}
+.sector-card .s-tag.hot{background:#fef0e7;color:var(--m-fit)}
+.sector-card .s-tag.steady{background:var(--m-fin-l);color:var(--m-fin)}
+.sector-card .s-tag.careful{background:#fef0f0;color:var(--danger)}
+.sector-card .s-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.sector-card .s-why{font-size:11px;color:var(--dim);margin-top:4px}
+
+/* ===== 健身 ===== */
+.workout-log{display:flex;flex-direction:column;gap:10px;max-height:380px;overflow:auto}
+.wo-card{background:#f7fafc;border:1px solid var(--border);border-radius:12px;padding:12px;display:flex;gap:12px}
+.wo-card img{width:88px;height:88px;border-radius:10px;object-fit:cover;cursor:pointer;flex-shrink:0}
+.wo-card .info{flex:1;min-width:0}
+.wo-card .info .wt{font-weight:600;font-size:14px;margin-bottom:3px;color:var(--text)}
+.wo-card .info .wd{color:var(--dim);font-size:11px;font-family:'JetBrains Mono',monospace;margin-bottom:6px}
+.wo-card .info .wm{font-size:12px;color:var(--muted);line-height:1.5}
+.muscle-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.muscle-chips span{font-size:10px;padding:2px 8px;border-radius:12px;background:var(--m-fit-l);color:var(--m-fit);border:1px solid rgba(240,147,107,.25)}
+.stat-mini{text-align:center;padding:10px;background:#f7fafc;border-radius:10px;border:1px solid var(--border)}
+.stat-mini .num{font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent)}
+.stat-mini .lab{font-size:11px;color:var(--muted)}
+
+/* ===== 笔记 ===== */
+.note-item{background:#f7fafc;border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;cursor:pointer;transition:.2s;position:relative}
+.note-item:hover{border-color:var(--m-note);background:var(--m-note-l);box-shadow:0 2px 8px rgba(176,124,198,.1)}
+.note-item .nt{font-weight:600;font-size:14px;margin-bottom:4px;color:var(--text);line-height:1.4}
+.note-item .nd{font-size:11px;color:var(--dim);font-family:'JetBrains Mono',monospace;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.note-item .nd::before{content:'';width:3px;height:3px;border-radius:50%;background:var(--m-note);display:inline-block}
+.note-item .np{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;line-height:1.6}
+.note-item .nd-badge{display:inline-block;font-size:10px;padding:1px 7px;border-radius:10px;background:var(--m-note-l);color:var(--m-note);border:1px solid rgba(176,124,198,.2);margin-left:6px;font-weight:500}
+.note-del{position:absolute;top:12px;right:12px;width:26px;height:26px;border-radius:50%;background:transparent;border:1px solid var(--border);color:var(--dim);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:.2s;opacity:0}
+.note-item:hover .note-del{opacity:1}
+.note-del:hover{background:#fef0f0;border-color:var(--danger);color:var(--danger)}
+.lock-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:60px 20px;text-align:center}
+.lock-screen .lock-ico{font-size:54px;opacity:.7}
+.lock-screen input{max-width:280px;text-align:center}
+
+/* ===== 模态框 ===== */
+.modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-mask.show{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;max-width:560px;width:100%;max-height:88vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.modal h3{margin-bottom:14px;font-size:17px}
+.modal .foot{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.img-preview-mask{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:200;display:none;align-items:center;justify-content:center;padding:30px;cursor:zoom-out}
+.img-preview-mask.show{display:flex}
+.img-preview-mask img{max-width:100%;max-height:100%;border-radius:10px}
+
+/* ===== 杂项 ===== */
+.empty{text-align:center;color:var(--dim);padding:30px;font-size:13px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--m-med);color:var(--text);padding:10px 20px;border-radius:10px;z-index:300;font-size:13px;opacity:0;transition:.3s;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.toast.show{opacity:1;bottom:34px}
+.scroll::-webkit-scrollbar{width:6px;height:6px}
+.scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.divider{height:1px;background:var(--border);margin:14px 0}
+.hint{font-size:11px;color:var(--dim);margin-top:6px;line-height:1.5}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><span class="dot"></span>AYY 工作台<small>v1.0 · 本地私有</small></div>
+  <nav class="tabs">
+    <button class="active" data-tab="medical"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span><span>医疗</span></button>
+    <button data-tab="finance"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8M21 7v6h-6"/></svg></span><span>财经</span></button>
+    <button data-tab="fitness"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><rect x="6" y="10" width="2" height="4"/><rect x="16" y="10" width="2" height="4"/><path d="M8 12h8"/></svg></span><span>健身</span></button>
+    <button data-tab="notes"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a2 2 0 012-2h12a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/><path d="M8 2v20"/><path d="M11 7h6M11 11h6M11 15h4"/></svg></span><span>笔记</span></button>
+  </nav>
+  <div class="clock" id="clock">--</div>
+  <div class="backup-btns">
+    <button class="btn ghost sm" onclick="exportData()" title="导出备份数据">💾 备份</button>
+    <button class="btn ghost sm" onclick="document.getElementById('importFile').click()" title="导入恢复数据">📂 恢复</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this.files[0])">
+  </div>
+</header>
+
+<main>
+<div class="mobile-backup">
+  <button class="btn ghost sm" onclick="exportData()">💾</button>
+  <button class="btn ghost sm" onclick="document.getElementById('importFile2').click()">📂</button>
+  <input type="file" id="importFile2" accept=".json" style="display:none" onchange="importData(this.files[0])">
+</div>
+
+<!-- ===================== 医疗 ===================== -->
+<section class="panel active" id="panel-medical">
+  <div class="panel-head">
+    <h2>🏥 医疗管理</h2>
+    <span class="sub">检查报告 · 用药记录 · 每日打卡</span>
+  </div>
+  <div class="grid g-2">
+    <!-- 检查报告 -->
+    <div class="card">
+      <h3><span class="ico">📁</span>检查报告备份与解读</h3>
+      <div class="row">
+        <div><input type="file" id="reportFile" accept="image/*,application/pdf" multiple></div>
+        <div class="no-flex"><button class="btn primary sm" onclick="uploadReport()">上传</button></div>
+      </div>
+      <div class="hint">支持图片/PDF，文件保存在浏览器本地（不会上传到服务器）</div>
+      <div class="divider"></div>
+      <div class="file-list scroll" id="reportList"></div>
+    </div>
+
+    <!-- 用药记录 -->
+    <div class="card">
+      <h3><span class="ico">💊</span>用药记录</h3>
+      <div class="row">
+        <div><label>药品名称</label><input id="medName" placeholder="如：二甲双胍"></div>
+        <div><label>剂量/频次</label><input id="medDose" placeholder="如：0.5g 每日两次"></div>
+        <div><label>开始日期</label><input type="date" id="medStart"></div>
+        <div><label>结束日期</label><input type="date" id="medEnd"></div>
+        <div class="no-flex"><button class="btn primary sm" onclick="addMed()">添加</button></div>
+      </div>
+      <div class="hint">填写用药周期后，列表会显示服药区间和剩余天数</div>
+      <div class="divider"></div>
+      <div id="medList"></div>
+    </div>
+
+    <!-- 每日打卡 -->
+    <div class="card" style="grid-column:1/-1">
+      <h3><span class="ico">✅</span>每日用药打卡 · <span id="calMonthLabel" class="muted"></span></h3>
+      <div class="row" style="margin-bottom:12px">
+        <div class="no-flex"><button class="btn sm" onclick="shiftCal(-1)">‹ 上月</button></div>
+        <div class="no-flex"><button class="btn sm" onclick="shiftCal(1)">下月 ›</button></div>
+        <div class="no-flex"><button class="btn primary sm" onclick="openCheckinModal()">＋ 记录用药</button></div>
+        <div style="flex:0 0 auto;align-self:center;color:var(--muted);font-size:13px" id="streakInfo"></div>
+      </div>
+      <div class="cal-head" id="calHead"></div>
+      <div class="calendar" id="calendar"></div>
+      <div class="hint">点击日期可查看当日用药记录；每顿药的时间、药名、剂量都会记录</div>
+      <div id="todayCheckins" style="margin-top:14px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 财经 ===================== -->
+<section class="panel" id="panel-finance">
+  <div class="panel-head">
+    <h2>📈 财经资讯</h2>
+    <span class="sub" id="financeDate">数据日期：--</span>
+    <div style="margin-left:auto"><button class="btn primary sm" onclick="updateFinance()">🔄 更新今日财经</button></div>
+  </div>
+
+  <!-- 行情卡片 -->
+  <div class="grid g-4" id="kpiGrid" style="margin-bottom:16px"></div>
+
+  <!-- 金价走势 -->
+  <div class="card" style="margin-bottom:16px">
+    <h3><span class="ico">🥇</span>金价走势（近7日，美元/盎司）</h3>
+    <canvas id="goldChart" height="120"></canvas>
+    <div class="hint" id="goldHint"></div>
+  </div>
+
+  <div class="grid g-2">
+    <!-- 财经新闻 -->
+    <div class="card">
+      <h3><span class="ico">💰</span>财经要闻</h3>
+      <div class="scroll" id="finNews" style="max-height:420px;overflow:auto"></div>
+    </div>
+    <!-- 社会新闻 + 投资要点 -->
+    <div class="card">
+      <h3><span class="ico">🌐</span>社会新闻</h3>
+      <div class="scroll" id="socNews" style="max-height:200px;overflow:auto;margin-bottom:12px"></div>
+      <div class="insight">
+        <h4>💡 对普通人有利的信息与投资建议</h4>
+        <ul id="insightList"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 投资行业推荐 -->
+  <div class="card" style="margin-top:16px">
+    <h3><span class="ico">🎯</span>投资行业推荐</h3>
+    <div class="grid g-3" id="sectorGrid"></div>
+    <div class="hint" style="margin-top:10px">以上为基于当日市场热点的行业方向梳理，仅供参考，不构成投资建议。投资有风险，入市需谨慎。</div>
+  </div>
+</section>
+
+<!-- ===================== 健身 ===================== -->
+<section class="panel" id="panel-fitness">
+  <div class="panel-head">
+    <h2>💪 普拉提训练记录</h2>
+    <span class="sub">私教课程 · 照片归档 · 肌群解读</span>
+  </div>
+
+  <!-- 统计 -->
+  <div class="grid g-4" style="margin-bottom:16px" id="fitStats"></div>
+
+  <div class="grid g-2">
+    <!-- 上传训练 -->
+    <div class="card">
+      <h3><span class="ico">📸</span>上传今日训练照片</h3>
+      <div><label>训练日期</label><input type="date" id="woDate"></div>
+      <div style="margin-top:8px"><label>训练内容/动作（可选，留空让我解读）</label>
+        <textarea id="woContent" placeholder="如：核心卷腹、百次拍击、侧卧抬腿..."></textarea></div>
+      <div style="margin-top:8px"><input type="file" id="woFile" accept="image/*" multiple></div>
+      <div style="margin-top:10px"><button class="btn primary sm" onclick="addWorkout()">保存训练记录</button></div>
+      <div class="hint">上传后请在记录卡片中点击「请求肌群解读」，我会根据动作/照片分析目标肌群与作用</div>
+    </div>
+
+    <!-- 肌群小知识 -->
+    <div class="card">
+      <h3><span class="ico">🧠</span>普拉提肌群速查</h3>
+      <div style="font-size:13px;color:var(--muted);line-height:1.8">
+        <p><b style="color:var(--m-fit)">核心（腹横肌/多裂肌）</b>：百次拍击、卷腹——稳定脊柱、改善体态</p>
+        <p><b style="color:var(--m-fit)">臀腿（臀大肌/股四头）</b>：桥式、侧卧抬腿——翘臀、改善膝痛</p>
+        <p><b style="color:var(--m-fit)">背伸肌群</b>：天鹅俯卧、游泳——改善圆肩驼背、护腰</p>
+        <p><b style="color:var(--m-fit)">肩袖/上背</b>：手臂画圈、拉力带——缓解肩颈僵硬</p>
+        <p><b style="color:var(--m-fit)">髋外展肌</b>：蚌式、侧踢——改善假胯宽、骨盆稳定</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 训练记录 -->
+  <div class="card" style="margin-top:16px">
+    <h3><span class="ico">📅</span>训练历史（按时间倒序）</h3>
+    <div class="workout-log scroll" id="workoutList"></div>
+  </div>
+</section>
+
+<!-- ===================== 笔记 ===================== -->
+<section class="panel" id="panel-notes">
+  <div id="notesLocked">
+    <div class="lock-screen">
+      <div class="lock-ico">🔒</div>
+      <h2 style="font-weight:700">私人笔记 · 加密</h2>
+      <p class="muted" style="max-width:340px;font-size:13px">笔记使用 AES-GCM 端到端加密，密码不存储。忘记密码将无法恢复内容，请妥善保管。</p>
+      <input type="password" id="notePwd" placeholder="输入密码解锁" onkeydown="if(event.key==='Enter')unlockNotes()">
+      <div>
+        <button class="btn primary" onclick="unlockNotes()">解锁</button>
+        <button class="btn ghost" onclick="setNotePwd()">设置/修改密码</button>
+      </div>
+      <div class="hint" style="max-width:340px">首次使用请先点「设置/修改密码」创建密码；密码经 SHA-256 派生密钥，仅存哈希用于校验</div>
+    </div>
+  </div>
+
+  <div id="notesUnlocked" style="display:none">
+    <div class="panel-head">
+      <h2>🔒 私人笔记</h2>
+      <span class="sub">AES-GCM 加密 · 按时间倒序</span>
+      <div style="margin-left:auto">
+        <button class="btn primary sm" onclick="openNoteEditor()">＋ 新笔记</button>
+        <button class="btn ghost sm" onclick="lockNotes()">🔒 锁定</button>
+      </div>
+    </div>
+    <div id="noteList"></div>
+  </div>
+</section>
+
+</main>
+
+<!-- 模态框：报告解读 -->
+<div class="modal-mask" id="modalReport">
+  <div class="modal">
+    <h3>📄 报告解读</h3>
+    <div id="reportDetail"></div>
+    <div class="foot">
+      <button class="btn sm" onclick="closeModal('modalReport')">关闭</button>
+      <button class="btn primary sm" onclick="saveReportInterpret()">保存解读</button>
+    </div>
+  </div>
+</div>
+
+<!-- 模态框：肌群解读 -->
+<div class="modal-mask" id="modalMuscle">
+  <div class="modal">
+    <h3>🧠 肌群解读请求</h3>
+    <div id="muscleDetail"></div>
+    <div class="foot">
+      <button class="btn sm" onclick="closeModal('modalMuscle')">取消</button>
+      <button class="btn primary sm" onclick="confirmMuscle()">生成解读</button>
+    </div>
+  </div>
+</div>
+
+<!-- 模态框：笔记编辑 -->
+<div class="modal-mask" id="modalNote">
+  <div class="modal" style="max-width:520px">
+    <h3 id="noteEditorTitle" style="color:var(--m-note)">📝 新笔记</h3>
+    <div><label>标题（可选）</label><input id="noteTitle" placeholder="留空则用正文首句作为标题"></div>
+    <div style="margin-top:12px"><label>正文</label><textarea id="noteBody" rows="12" style="min-height:200px;font-size:14px;line-height:1.7" placeholder="写下你想记录的内容..."></textarea></div>
+    <div class="foot">
+      <button class="btn danger sm" id="noteDelBtn" onclick="delNote()" style="margin-right:auto;display:none">🗑 删除</button>
+      <button class="btn sm" onclick="closeModal('modalNote')">取消</button>
+      <button class="btn primary sm" onclick="saveNote()">💾 保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 图片预览 -->
+<div class="img-preview-mask" id="imgPreview" onclick="this.classList.remove('show')">
+  <img id="imgPreviewSrc">
+</div>
+
+<!-- 模态框：用药打卡 -->
+<div class="modal-mask" id="modalCheckin">
+  <div class="modal" style="max-width:480px">
+    <h3 style="color:var(--m-med)">💊 记录用药</h3>
+    <div class="row">
+      <div><label>服药时间</label><input type="datetime-local" id="ckTime"></div>
+    </div>
+    <div style="margin-top:10px"><label>药名（可多选）</label><div id="ckMedChips" style="display:flex;flex-wrap:wrap;gap:6px"></div></div>
+    <div style="margin-top:8px"><label>或手动输入药名</label><input id="ckMedName" placeholder="如：维生素D3"></div>
+    <div class="row" style="margin-top:8px">
+      <div><label>剂量</label><input id="ckDose" placeholder="如：1000IU"></div>
+      <div><label>这顿备注（可选）</label><input id="ckNote" placeholder="如：饭后服用"></div>
+    </div>
+    <div class="foot">
+      <button class="btn sm" onclick="closeModal('modalCheckin')">取消</button>
+      <button class="btn primary sm" onclick="saveCheckin()">保存记录</button>
+    </div>
+  </div>
+</div>
+
+<!-- 模态框：查看某日用药记录 -->
+<div class="modal-mask" id="modalDayLog">
+  <div class="modal" style="max-width:480px">
+    <h3 style="color:var(--m-med)" id="dayLogTitle">📅 用药记录</h3>
+    <div id="dayLogContent"></div>
+    <div class="foot"><button class="btn sm" onclick="closeModal('modalDayLog')">关闭</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ 通用 ============ */
+const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
+const LS={
+  get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},
+  set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))
+};
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000)}
+function todayStr(){return new Date().toISOString().slice(0,10)}
+function fmtDate(d){return new Date(d).toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})}
+
+// 图片压缩：自动缩放+压缩质量，保证清晰度够分析，体积大幅缩小
+// maxWidth 最大宽度1200px，质量0.7（JPEG），照片类通常 2MB→200KB
+function compressImage(dataUrl,maxW,maxH,quality){
+  return new Promise(resolve=>{
+    const img=new Image();
+    img.onload=()=>{
+      let w=img.width,h=img.height;
+      // 按比例缩放
+      if(w>maxW){h=h*maxW/w;w=maxW}
+      if(h>maxH){w=w*maxH/h;h=maxH}
+      const canvas=document.createElement('canvas');
+      canvas.width=w;canvas.height=h;
+      const ctx=canvas.getContext('2d');
+      // 白底（防止透明PNG变黑）
+      ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+      ctx.drawImage(img,0,0,w,h);
+      resolve(canvas.toDataURL('image/jpeg',quality));
+    };
+    img.onerror=()=>resolve(dataUrl); // 压缩失败返回原图
+    img.src=dataUrl;
+  });
+}
+
+// 时钟
+function tick(){const d=new Date();$('#clock').textContent=d.toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',weekday:'short',hour:'2-digit',minute:'2-digit'})}
+setInterval(tick,1000);tick();
+
+// Tab 切换
+$$('nav.tabs button').forEach(b=>b.onclick=()=>{
+  $$('nav.tabs button').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  $$('.panel').forEach(p=>p.classList.remove('active'));
+  $('#panel-'+b.dataset.tab).classList.add('active');
+});
+
+// 模态框
+function closeModal(id){$('#'+id).classList.remove('show')}
+function previewImg(src){$('#imgPreviewSrc').src=src;$('#imgPreview').classList.add('show')}
+
+/* ============ 医疗：报告 ============ */
+let reports=LS.get('reports',[]);
+function renderReports(){
+  const el=$('#reportList');
+  if(!reports.length){el.innerHTML='<div class="empty">暂无报告，上传后可添加解读</div>';return}
+  el.innerHTML=reports.slice().reverse().map(r=>`
+    <div class="file-item">
+      ${r.type.startsWith('image/')?`<img class="thumb" src="${r.data}" onclick="previewImg('${r.data}')">`:`<div class="ficon">📄</div>`}
+      <div class="fname">${r.name}<br><span class="fdate">${fmtDate(r.date)}</span></div>
+      <button class="btn sm" onclick="viewReport('${r.id}')">解读</button>
+      <button class="btn sm danger" onclick="delReport('${r.id}')">删</button>
+    </div>`).join('');
+}
+function uploadReport(){
+  const files=$('#reportFile').files;
+  if(!files.length){toast('请先选择文件');return}
+  let pending=files.length;
+  Array.from(files).forEach(f=>{
+    if(f.type.startsWith('image/')){
+      // 图片先读原图再压缩
+      const r=new FileReader();
+      r.onload=async()=>{
+        const compressed=await compressImage(r.result,1400,1800,0.72);
+        reports.push({id:Date.now()+'_'+Math.random().toString(36).slice(2,7),name:f.name,type:'image/jpeg',data:compressed,date:new Date().toISOString(),interpret:''});
+        if(--pending===0){LS.set('reports',reports);renderReports();$('#reportFile').value='';toast('已上传 '+files.length+' 份报告（图片已压缩）')}
+      };
+      r.readAsDataURL(f);
+    }else{
+      // PDF 等非图片文件不压缩
+      const r=new FileReader();
+      r.onload=()=>{
+        reports.push({id:Date.now()+'_'+Math.random().toString(36).slice(2,7),name:f.name,type:f.type,data:r.result,date:new Date().toISOString(),interpret:''});
+        if(--pending===0){LS.set('reports',reports);renderReports();$('#reportFile').value='';toast('已上传 '+files.length+' 份报告')}
+      };
+      r.readAsDataURL(f);
+    }
+  });
+}
+function delReport(id){if(confirm('确定删除此报告？')){reports=reports.filter(r=>r.id!==id);LS.set('reports',reports);renderReports()}}
+function viewReport(id){
+  const r=reports.find(x=>x.id===id);if(!r)return;
+  curReportId=id;
+  let html='';
+  if(r.type.startsWith('image/'))html+=`<img src="${r.data}" style="width:100%;border-radius:10px;margin-bottom:12px">`;
+  else html+=`<div class="empty">PDF文件：${r.name}</div>`;
+  html+=`<label>我的解读/医嘱备注</label><textarea id="interpretText" rows="6">${r.interpret||''}</textarea>
+         <div class="hint">提示：上传报告后，可让我（WorkBuddy）帮你看报告内容并填写解读，把解读文字粘贴到这里保存。</div>`;
+  $('#reportDetail').innerHTML=html;
+  $('#modalReport').classList.add('show');
+}
+let curReportId=null;
+function saveReportInterpret(){
+  const r=reports.find(x=>x.id===curReportId);if(!r)return;
+  r.interpret=$('#interpretText').value;
+  LS.set('reports',reports);closeModal('modalReport');renderReports();toast('解读已保存');
+}
+
+/* ============ 医疗：用药记录 ============ */
+let meds=LS.get('meds',[]);
+function renderMeds(){
+  const el=$('#medList');
+  if(!meds.length){el.innerHTML='<div class="empty">暂无用药记录</div>';return}
+  const today=new Date();today.setHours(0,0,0,0);
+  el.innerHTML=meds.map(m=>{
+    // 计算周期状态
+    let cycleInfo='',statusTag='';
+    if(m.start||m.end){
+      const s=m.start?new Date(m.start):null;
+      const e=m.end?new Date(m.end):null;
+      if(s)s.setHours(0,0,0,0);
+      if(e)e.setHours(0,0,0,0);
+      const fmtD=d=>d?`${d.getMonth()+1}月${d.getDate()}日`:'';
+      cycleInfo=`${fmtD(s)} ~ ${fmtD(e)}`;
+      // 状态判断
+      if(s&&today<s){statusTag='<span class="tag">未开始</span>'}
+      else if(e&&today>e){statusTag='<span class="tag down">已结束</span>'}
+      else if(s&&e){
+        const days=Math.ceil((e-today)/86400000);
+        statusTag=days>=0?`<span class="tag up">服用中·剩${days+1}天</span>`:'<span class="tag down">已结束</span>';
+      }else if(s){statusTag='<span class="tag up">服用中</span>'}
+    }
+    return `
+    <div class="med-item">
+      <span style="font-size:18px">💊</span>
+      <span class="name">${m.name}<br>
+        <span class="dose">${m.dose||''}</span>
+        ${cycleInfo?`<br><span class="dose">📅 ${cycleInfo}</span>`:''}
+        ${statusTag?`<br>${statusTag}`:''}
+      </span>
+      <button class="btn sm danger" onclick="delMed('${m.id}')">删</button>
+    </div>`;
+  }).join('');
+}
+function addMed(){
+  const n=$('#medName').value.trim(),d=$('#medDose').value.trim();
+  const s=$('#medStart').value,e=$('#medEnd').value;
+  if(!n){toast('请输入药品名称');return}
+  if(s&&e&&new Date(s)>new Date(e)){toast('结束日期不能早于开始日期');return}
+  meds.push({id:Date.now()+'',name:n,dose:d,start:s||'',end:e||''});
+  LS.set('meds',meds);renderMeds();
+  $('#medName').value='';$('#medDose').value='';$('#medStart').value='';$('#medEnd').value='';
+  toast('已添加用药记录');
+}
+function delMed(id){meds=meds.filter(m=>m.id!==id);LS.set('meds',meds);renderMeds()}
+
+/* ============ 医疗：打卡日历 ============ */
+let calCursor=new Date();
+// checkins 改为对象数组：{id,time,meds:[{name,dose}],note}
+let checkins=LS.get('checkins',[]);
+// 兼容旧数据（旧的 ISO 字符串）
+checkins=checkins.map(c=>typeof c==='string'?{id:Date.now()+Math.random(),time:c,meds:[],note:'旧记录'}:c);
+function isSameDay(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate()}
+function getCheckinsOfDay(date){
+  return checkins.filter(c=>isSameDay(new Date(c.time),date)).sort((a,b)=>new Date(a.time)-new Date(b.time));
+}
+function renderCal(){
+  const y=calCursor.getFullYear(),m=calCursor.getMonth();
+  $('#calMonthLabel').textContent=`${y}年${m+1}月`;
+  const heads=['日','一','二','三','四','五','六'];
+  $('#calHead').innerHTML=heads.map(h=>`<div>${h}</div>`).join('');
+  const first=new Date(y,m,1).getDay();
+  const days=new Date(y,m+1,0).getDate();
+  let html='';
+  for(let i=0;i<first;i++)html+=`<div class="cal-cell" style="visibility:hidden"></div>`;
+  const today=new Date();
+  for(let d=1;d<=days;d++){
+    const dt=new Date(y,m,d);
+    const dayLog=getCheckinsOfDay(dt);
+    const done=dayLog.length>0;
+    const isToday=isSameDay(dt,today);
+    html+=`<div class="cal-cell ${done?'done':''} ${isToday?'today':''}" onclick="viewDayLog('${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}')">
+      <div class="d">${d}</div><div class="m">${done?dayLog.length+'次':''}</div></div>`;
+  }
+  $('#calendar').innerHTML=html;
+  // 连续天数
+  let streak=0;let cur=new Date(today);
+  while(getCheckinsOfDay(cur).length>0){streak++;cur.setDate(cur.getDate()-1)}
+  $('#streakInfo').textContent=`🔥 连续打卡 ${streak} 天`;
+  // 今日记录
+  renderTodayCheckins();
+}
+function renderTodayCheckins(){
+  const todayLog=getCheckinsOfDay(new Date());
+  const el=$('#todayCheckins');
+  if(!todayLog.length){el.innerHTML='<div class="empty" style="padding:16px">今日暂无用药记录，点「＋ 记录用药」开始</div>';return}
+  el.innerHTML=`<div style="font-size:13px;font-weight:600;color:var(--m-med);margin-bottom:8px">📋 今日用药记录（${todayLog.length}次）</div>`+
+    renderCheckinGroups(todayLog,true);
+}
+// 按上午/下午/晚上分组渲染
+function renderCheckinGroups(log,withDelete){
+  const groups={'上午':[],'下午':[],'晚上':[]};
+  log.forEach(c=>{
+    const h=new Date(c.time).getHours();
+    if(h<12)groups['上午'].push(c);
+    else if(h<18)groups['下午'].push(c);
+    else groups['晚上'].push(c);
+  });
+  const icons={'上午':'☀️','下午':'🌤️','晚上':'🌙'};
+  let html='';
+  for(const period of ['上午','下午','晚上']){
+    if(!groups[period].length)continue;
+    html+=`<div style="margin-bottom:10px"><div style="font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500">${icons[period]} ${period}（${groups[period].length}次）</div>`;
+    html+=groups[period].map(c=>{
+      const t=new Date(c.time);
+      const tStr=`${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+      const medStr=c.meds.map(m=>`<span style="display:inline-block;padding:1px 8px;border-radius:10px;background:var(--m-med-l);color:var(--m-med);font-size:11px;margin:2px 2px">${m.name}${m.dose?' '+m.dose:''}</span>`).join('');
+      return `<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#f7fafc;border:1px solid var(--border);border-radius:10px;margin-bottom:6px">
+        <span style="font-weight:600;color:var(--m-med);font-size:13px;min-width:40px">${tStr}</span>
+        <div style="flex:1">${medStr}${c.note?`<div style="font-size:11px;color:var(--muted);margin-top:2px">${c.note}</div>`:''}</div>
+        ${withDelete?`<button class="btn sm danger" onclick="delCheckin('${c.id}')">×</button>`:''}
+      </div>`;
+    }).join('');
+    html+='</div>';
+  }
+  return html;
+}
+let selectedMeds=[];
+function openCheckinModal(){
+  // 默认时间为现在
+  const now=new Date();
+  const localISO=new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,16);
+  $('#ckTime').value=localISO;
+  // 从用药记录生成快捷选择
+  const chips=$('#ckMedChips');
+  selectedMeds=[];
+  if(meds.length){
+    chips.innerHTML=meds.map(m=>`<button class="btn sm" data-med="${m.name}" data-dose="${m.dose||''}" onclick="toggleMedChip(this)">${m.name}</button>`).join('');
+  }else{
+    chips.innerHTML='<span class="hint">暂无用药记录，请手动输入</span>';
+  }
+  $('#ckMedName').value='';$('#ckDose').value='';$('#ckNote').value='';
+  $('#modalCheckin').classList.add('show');
+}
+function toggleMedChip(btn){
+  const name=btn.dataset.med,dose=btn.dataset.dose;
+  const i=selectedMeds.findIndex(m=>m.name===name);
+  if(i>=0){selectedMeds.splice(i,1);btn.style.background='';btn.style.color='';btn.style.borderColor=''}
+  else{selectedMeds.push({name,dose});btn.style.background='var(--m-med-l)';btn.style.color='var(--m-med)';btn.style.borderColor='var(--m-med)'}
+}
+function saveCheckin(){
+  const time=$('#ckTime').value;
+  if(!time){toast('请选择服药时间');return}
+  const note=$('#ckNote').value.trim();
+  // 合并选中的药 + 手动输入
+  const medName=$('#ckMedName').value.trim();
+  const medDose=$('#ckDose').value.trim();
+  const allMeds=[...selectedMeds];
+  if(medName)allMeds.push({name:medName,dose:medDose});
+  if(!allMeds.length){toast('请选择或输入药名');return}
+  checkins.push({id:Date.now()+'_'+Math.random().toString(36).slice(2,6),time:new Date(time).toISOString(),meds:allMeds,note});
+  LS.set('checkins',checkins);
+  closeModal('modalCheckin');renderCal();
+  toast('已记录 '+allMeds.length+' 种药');
+}
+function delCheckin(id){
+  if(!confirm('删除这条用药记录？'))return;
+  checkins=checkins.filter(c=>c.id!==id);
+  LS.set('checkins',checkins);renderCal();toast('已删除');
+}
+function viewDayLog(dateStr){
+  const dt=new Date(dateStr);
+  const log=getCheckinsOfDay(dt);
+  const today=new Date();const isToday=isSameDay(dt,today);
+  $('#dayLogTitle').textContent=`📅 ${dt.getMonth()+1}月${dt.getDate()}日 用药记录${isToday?'（今天）':''}`;
+  if(!log.length){
+    $('#dayLogContent').innerHTML=`<div class="empty">当天无用药记录</div>`;
+  }else{
+    $('#dayLogContent').innerHTML=renderCheckinGroups(log,false);
+  }
+  $('#modalDayLog').classList.add('show');
+}
+function shiftCal(n){calCursor.setMonth(calCursor.getMonth()+n);renderCal()}
+
+/* ============ 财经 ============ */
+// 内置今日财经数据（2026-07-29，来源：东方财富网/新华财经等公开信息）
+const BUILTIN_FINANCE = {
+  date:"2026-07-29",
+  stock:{sh:"3828.47",shChg:"+0.40%",hk:"25310.85",hkChg:"+0.41%",us:"52747.32",usChg:"+1.03%",nasdaq:"24876.91",nasdaqChg:"-0.22%",dax:"25492.59",daxChg:"+0.52%"},
+  gold:{spot:4015.30,spotChg:"-0.58%",shanghai:"880.00",shanghaiChg:"-0.37%",comex:"4073.80",comexChg:"-0.58%"},
+  oil:{wti:"82.69",wtiChg:"+4.33%",brent:"84.09",brentChg:"-4.83%"},
+  fx:{dxy:"101.51",dxyChg:"+0.04%",cny:"6.7674",cnyChg:"下调28点（升值）"},
+  goldHistory:[{d:"07-23",v:4092.40},{d:"07-24",v:4118.60},{d:"07-25",v:4088.99},{d:"07-26",v:4076.50},{d:"07-27",v:4076.85},{d:"07-28",v:4073.98},{d:"07-29",v:4015.30}],
+  newsFinance:[
+    {t:"A股三大指数集体收涨，乳业教育板块走强",m:"沪指收报3828.47点涨0.40%，深成指涨1.10%，创业板指涨1.55%。午后券商走强带动指数上行，两市成交23120亿元放量2727亿。乳业、教育、游戏涨幅居前，高带宽内存、光刻机、电子化学品跌幅居前。",s:"新华财经"},
+    {t:"韩国KOSPI暴跌10.84%，日经225跌3.95%",m:"亚太市场剧烈震荡，韩国KOSPI指数单日暴跌10.84%触发熔断，日经225下跌3.95%。全球存储芯片及半导体板块集体重挫，资金加速从高估值科技成长撤离。",s:"东方财富网"},
+    {t:"全球存储股大幅调整，部分龙头较年内高点回撤超50%",m:"SK海力士持续跌破IPO发行价，费城半导体指数大跌4.49%，光模块、存储龙头全线走弱。全球存储芯片板块迎来罕见集中抛售。",s:"新浪财经"},
+    {t:"WTI原油反弹4.33%，布伦特仍跌4.83%",m:"WTI原油报82.69美元/桶反弹4.33%，布伦特原油84.09美元/桶跌4.83%。美伊海上封锁持续但维持停火，欧佩克+预计9月后产量保持稳定，油价走势分化。",s:"东方财富网"},
+    {t:"苹果市值短暂突破5万亿美元，成史上第二家",m:"苹果股价持续走强，市值短暂突破5万亿美元关口，成为史上第二家达到此里程碑的公司。资金从高估值科技成长轮动至传统蓝筹。",s:"东方财富网"},
+    {t:"亚马逊首次登顶《财富》世界500强，终结沃尔玛12年榜首",m:"《财富》世界500强最新榜单发布，亚马逊首次登顶榜首，终结沃尔玛连续12年第一的纪录。电商与云计算双轮驱动推动亚马逊营收规模创新高。",s:"东方财富网"},
+    {t:"长鑫科技将纳入MSCI中国全股票指数，8月10日生效",m:"长鑫科技上市后被快速纳入MSCI中国全股票指数，8月10日生效。外资被动资金将加速配置，存储芯片国产替代逻辑持续强化。",s:"东方财富网"},
+    {t:"上半年税收收入突破十万亿元，新兴产业增势强劲",m:"上半年全国税收收入突破10万亿元，得益于新兴产业增势强劲。沪市公司去年年报超万亿分红已到账，另有1200亿元在路上。",s:"新华财经"}
+  ],
+  newsSocial:[
+    {t:"商务部加力推动城市一刻钟便民生活圈建设",m:"商务部要求2026年完成全国建设1万个便民生活圈的既定目标，加快复制推广成功经验，扩大便民生活圈覆盖范围。"},
+    {t:"市场监管总局发布智能家电质量安全风险国标",m:"《智能家用电器质量安全风险分类评价指南》国家标准发布，将于2027年2月1日实施，化解传统物理安全与信息安全叠加隐患。"},
+    {t:"美国7月消费者信心下降，营商环境和就业市场看法恶化",m:"美国7月消费者信心指数下滑，民众对营商环境和就业市场的看法恶化，美联储决议前市场情绪偏谨慎。"}
+  ],
+  insights:[
+    "<b>存储芯片全球大调整，短期谨慎观望</b>：费城半导体跌4.49%，韩国KOSPI暴跌10.84%，存储龙头全线走弱。短期情绪极度恐慌，但国产替代长期逻辑不变，不宜恐慌割肉，等企稳后再考虑分批布局。",
+    "<b>金价回落至4015美元，定投窗口再现</b>：现货黄金从4073跌至4015美元/盎司，短期回调释放部分高位风险。定投黄金ETF/积金者可继续按计划执行，波动中摊薄成本。",
+    "<b>乳业板块反转信号显现</b>：原奶供给收缩、价格企稳，开源证券认为行业有望从左侧磨底进入右侧确认阶段。上游牧场弹性大，下游龙头竞争环境改善，可关注相关标的。",
+    "<b>油价走势分化，WTI反弹布伦特补跌</b>：美伊维持停火但海上封锁持续，欧佩克+预计产量稳定。WTI反弹4.33%但布伦特仍跌4.83%，短期油价波动加大，航空物流成本端仍受益。",
+    "<b>资金高低切换，内需消费获青睐</b>：A股资金从高估值科技成长出逃，涌入业绩确定性强的内需消费、防御蓝筹。白酒、大金融托底沪指，乳业教育领涨，存量资金风格切换明显。",
+    "<b>LPR维持3.0%/3.5%，10年国债1.726%</b>：5年期LPR 3.5%低位维持，10年国债收益率1.726%微降。稳健配置可关注长债基金，但需注意利率反弹风险，存量房贷可关注重定价机会。"
+  ],
+  sectors:[
+    {name:"乳业/原奶",tag:"hot",reason:"供给收缩价格企稳，行业从左侧磨底进入右侧确认，全产业链受益",how:"关注上游牧场及下游乳企龙头，弹性较大"},
+    {name:"黄金",tag:"steady",reason:"金价回落至4015美元释放高位风险，长期避险价值仍在",how:"定投黄金ETF/积金，分批买入，回调是机会"},
+    {name:"内需消费/零售",tag:"hot",reason:"资金高低切换涌入内需消费，一刻钟便民生活圈政策加力",how:"关注食品饮料、零售龙头，业绩确定性较强"},
+    {name:"航空/物流",tag:"hot",reason:"布伦特原油跌4.83%，人民币升值，运营成本端持续受益",how:"航空股或物流ETF，油价下行受益"},
+    {name:"国债/债券基金",tag:"steady",reason:"10年国债1.726%低位，LPR 3.5%维持，长债价格上涨",how:"长债基金或国债ETF，适合稳健配置"},
+    {name:"半导体/存储芯片",tag:"careful",reason:"全球存储股大幅调整，短期恐慌情绪浓厚，但国产替代长期逻辑不变",how:"短期观望为主，等企稳后再分批布局，仓位控制10%以内"}
+  ]
+};
+let financeData=LS.get('finance',null)||BUILTIN_FINANCE;
+function renderFinance(){
+  if(!financeData){$('#financeDate').textContent='暂无数据，点击「更新今日财经」';return}
+  const f=financeData;
+  $('#financeDate').textContent='数据日期：'+f.date;
+  // KPI
+  const kpis=[
+    {lab:'上证指数',val:f.stock.sh,chg:f.stock.shChg},
+    {lab:'恒生指数',val:f.stock.hk,chg:f.stock.hkChg},
+    {lab:'道琼斯',val:f.stock.us,chg:f.stock.usChg},
+    {lab:'纳斯达克',val:f.stock.nasdaq,chg:f.stock.nasdaqChg},
+    {lab:'现货黄金',val:f.gold.spot+'$/oz',chg:f.gold.spotChg},
+    {lab:'沪金9999',val:f.gold.shanghai+'元/克',chg:f.gold.shanghaiChg},
+    {lab:'布伦特原油',val:f.oil.brent+'$/桶',chg:f.oil.brentChg},
+    {lab:'美元指数',val:f.fx.dxy,chg:f.fx.dxyChg}
+  ];
+  $('#kpiGrid').innerHTML=`<div class="card" style="grid-column:1/-1"><div class="kpi-table">${kpis.map(k=>{
+    const up=!String(k.chg).includes('-');
+    return `<div class="kpi-row">
+      <span class="kpi-lab">${k.lab}</span>
+      <span class="kpi-val">${k.val}</span>
+      <span class="kpi-chg ${up?'pos':'neg'}">${up?'▲':'▼'}${k.chg}</span>
+    </div>`;
+  }).join('')}</div></div>`;
+  // 金价图
+  drawGoldChart(f.goldHistory);
+  $('#goldHint').textContent=`近7日区间 ${Math.min(...f.goldHistory.map(x=>x.v)).toFixed(0)} ~ ${Math.max(...f.goldHistory.map(x=>x.v)).toFixed(0)} 美元/盎司`;
+  // 新闻
+  $('#finNews').innerHTML=f.newsFinance.map(n=>`<div class="news-item"><div class="nt">${n.t}</div><div class="nm">${n.m}</div><div class="nsrc">${n.s||''}</div></div>`).join('');
+  $('#socNews').innerHTML=f.newsSocial.map(n=>`<div class="news-item"><div class="nt">${n.t}</div><div class="nm">${n.m}</div></div>`).join('');
+  $('#insightList').innerHTML=f.insights.map(i=>`<li>${i}</li>`).join('');
+  // 行业推荐
+  const tagMap={hot:{lab:'热门',cls:'hot'},steady:{lab:'稳健',cls:'steady'},careful:{lab:'谨慎',cls:'careful'}};
+  $('#sectorGrid').innerHTML=(f.sectors||[]).map(s=>{
+    const t=tagMap[s.tag]||tagMap.steady;
+    return `<div class="sector-card">
+      <div class="s-name">${s.name}<span class="s-tag ${t.cls}">${t.lab}</span></div>
+      <div class="s-desc">${s.reason}</div>
+      <div class="s-why">💡 ${s.how}</div>
+    </div>`;
+  }).join('');
+}
+function drawGoldChart(data){
+  const c=$('#goldChart'),ctx=c.getContext('2d');
+  const w=c.width=c.offsetWidth*2,h=c.height=240;
+  ctx.scale(2,2);
+  const W=c.offsetWidth,H=120;
+  const pad=30;
+  const vs=data.map(d=>d.v),min=Math.min(...vs),max=Math.max(...vs);
+  const rng=max-min||1;
+  ctx.clearRect(0,0,W,H);
+  // grid
+  ctx.strokeStyle='#e2e8f0';ctx.fillStyle='#a0aec0';ctx.font='10px monospace';
+  for(let i=0;i<=3;i++){
+    const y=pad+(H-pad-20)*i/3;
+    ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(W-10,y);ctx.stroke();
+    ctx.fillText((max-rng*i/3).toFixed(0),2,y+3);
+  }
+  // line
+  ctx.strokeStyle='#f0936b';ctx.lineWidth=2;ctx.beginPath();
+  data.forEach((d,i)=>{
+    const x=pad+(W-pad-10)*i/(data.length-1);
+    const y=pad+(H-pad-20)*(1-(d.v-min)/rng);
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  });
+  ctx.stroke();
+  // dots
+  ctx.fillStyle='#f0936b';
+  data.forEach((d,i)=>{
+    const x=pad+(W-pad-10)*i/(data.length-1);
+    const y=pad+(H-pad-20)*(1-(d.v-min)/rng);
+    ctx.beginPath();ctx.arc(x,y,3,0,7);ctx.fill();
+    if(i===data.length-1){ctx.fillStyle='#2d3748';ctx.font='bold 11px monospace';ctx.fillText(d.v.toFixed(0),x-15,y-10);ctx.fillStyle='#f0936b'}
+  });
+}
+function updateFinance(){
+  toast('请在 WorkBuddy 中说「更新工作台财经数据」，我会重新抓取并写入。也可手动编辑 financeData。');
+  // 这里 financeData 由外部 WorkBuddy 写入 localStorage 的 'finance' 键后刷新
+}
+
+/* ============ 健身 ============ */
+let workouts=LS.get('workouts',[]);
+function renderWorkouts(){
+  // 统计
+  const total=workouts.length;
+  const thisMonth=workouts.filter(w=>w.date.slice(0,7)===todayStr().slice(0,7)).length;
+  const muscleCount={};
+  workouts.forEach(w=>(w.muscles||[]).forEach(m=>muscleCount[m]=(muscleCount[m]||0)+1));
+  const topMuscle=Object.entries(muscleCount).sort((a,b)=>b[1]-a[1])[0];
+  $('#fitStats').innerHTML=[
+    {num:total,lab:'累计训练次数'},
+    {num:thisMonth,lab:'本月训练'},
+    {num:topMuscle?topMuscle[1]:0,lab:'最多训练部位'},
+    {num:total?Math.round(total*4/4):0,lab:'总训练(小时≈)'}
+  ].map(s=>`<div class="stat-mini"><div class="num">${s.num}</div><div class="lab">${s.lab}</div></div>`).join('');
+
+  const el=$('#workoutList');
+  if(!workouts.length){el.innerHTML='<div class="empty">暂无训练记录，上传第一张训练照片吧</div>';return}
+  el.innerHTML=workouts.slice().reverse().map(w=>`
+    <div class="wo-card">
+      ${w.photos&&w.photos[0]?`<img src="${w.photos[0]}" onclick="previewImg('${w.photos[0]}')">`:'<div class="ficon">🏋️</div>'}
+      <div class="info">
+        <div class="wt">${w.content|| '普拉提训练'} ${w.interpret?'<span class="tag warn">已解读</span>':'<span class="tag">待解读</span>'}</div>
+        <div class="wd">${w.date} · ${w.photos?.length||0}张照片</div>
+        ${w.muscles?.length?`<div class="muscle-chips">${w.muscles.map(m=>`<span>${m}</span>`).join('')}</div>`:''}
+        ${w.interpret?`<div class="wm" style="margin-top:6px"><b>肌群解读：</b>${w.interpret}</div>`:''}
+        <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+          ${w.photos?.length>1?w.photos.slice(1).map(p=>`<img src="${p}" style="width:44px;height:44px;border-radius:6px;object-fit:cover;cursor:pointer" onclick="previewImg('${p}')">`).join(''):''}
+          <button class="btn sm" onclick="requestMuscle('${w.id}')">🧠 请求肌群解读</button>
+          <button class="btn sm danger" onclick="delWorkout('${w.id}')">删除</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function addWorkout(){
+  const date=$('#woDate').value||todayStr();
+  const content=$('#woContent').value.trim();
+  const files=$('#woFile').files;
+  const photos=[];
+  let pending=files.length;
+  if(!files.length&&!content){toast('请至少上传照片或填写训练内容');return}
+  if(!pending){finish()}
+  else Array.from(files).forEach(f=>{
+    const r=new FileReader();
+    r.onload=async()=>{
+      const compressed=await compressImage(r.result,1200,1600,0.7);
+      photos.push(compressed);
+      if(--pending===0)finish();
+    };
+    r.readAsDataURL(f);
+  });
+  function finish(){
+    workouts.push({id:Date.now()+'',date,content,photos,muscles:[],interpret:''});
+    LS.set('workouts',workouts);renderWorkouts();
+    $('#woDate').value='';$('#woContent').value='';$('#woFile').value='';
+    toast('训练记录已保存');
+  }
+}
+function delWorkout(id){if(confirm('删除此训练记录？')){workouts=workouts.filter(w=>w.id!==id);LS.set('workouts',workouts);renderWorkouts()}}
+let curWoId=null;
+function requestMuscle(id){
+  const w=workouts.find(x=>x.id===id);if(!w)return;
+  curWoId=id;
+  const photoNote=w.photos?.length?`<div class="hint">已附带 ${w.photos.length} 张照片，WorkBuddy 会结合照片和文字判断</div>`:'';
+  $('#muscleDetail').innerHTML=`
+    <p><b>训练日期：</b>${w.date}</p>
+    <p><b>训练内容：</b>${w.content||'（未填写，将主要依据照片判断）'}</p>
+    ${photoNote}
+    <div class="divider"></div>
+    <label>补充说明（可选）</label>
+    <textarea id="muscleExtra" rows="3" placeholder="如：今天教练说重点是腹部，做了3组..."></textarea>
+    <div class="hint">点击「生成解读」后，请在 WorkBuddy 中说「解读训练 ${id}」，我会分析目标肌群与作用并自动填入。</div>`;
+  $('#modalMuscle').classList.add('show');
+}
+function confirmMuscle(){
+  // 标记待解读，提示用户
+  closeModal('modalMuscle');
+  toast('已标记，请在 WorkBuddy 中说「解读训练 '+curWoId+'」');
+}
+
+/* ============ 笔记加密 ============ */
+let noteKey=null; // CryptoKey
+let notesRaw=LS.get('notesEnc',null); // {salt, pwdHash, items:[{iv,ct}]}
+let notesPlain=[];
+let curNoteId=null;
+
+async function sha256(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,'0')).join('')}
+function buf2b64(buf){return btoa(String.fromCharCode(...new Uint8Array(buf)))}
+function b642buf(s){return Uint8Array.from(atob(s),c=>c.charCodeAt(0)).buffer}
+async function deriveKey(pwd,salt){
+  const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pwd),'PBKDF2',false,['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:150000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+}
+async function setNotePwd(){
+  const p=prompt('设置笔记密码（首次设置或修改密码）：\n注意：修改密码后已有笔记需用旧密码解锁后再保存。');
+  if(!p)return;
+  if(p.length<4){toast('密码至少4位');return}
+  if(notesRaw&&notesRaw.items?.length){
+    if(!noteKey){toast('请先用旧密码解锁后再修改密码');return}
+    // 重新加密
+    const salt=crypto.getRandomValues(new Uint8Array(16));
+    const newKey=await deriveKey(p,salt);
+    const newItems=[];
+    for(const n of notesPlain){
+      const iv=crypto.getRandomValues(new Uint8Array(12));
+      const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},newKey,new TextEncoder().encode(JSON.stringify(n)));
+      newItems.push({iv:buf2b64(iv),ct:buf2b64(ct)});
+    }
+    notesRaw={salt:buf2b64(salt),pwdHash:await sha256(p),items:newItems};
+    LS.set('notesEnc',notesRaw);noteKey=newKey;
+    toast('密码已修改，笔记已重新加密');
+  }else{
+    const salt=crypto.getRandomValues(new Uint8Array(16));
+    notesRaw={salt:buf2b64(salt),pwdHash:await sha256(p),items:[]};
+    LS.set('notesEnc',notesRaw);
+    noteKey=await deriveKey(p,salt);
+    notesPlain=[];
+    $('#notesLocked').style.display='none';
+    $('#notesUnlocked').style.display='block';
+    renderNotes();
+    toast('密码已设置，已进入笔记');
+  }
+}
+async function unlockNotes(){
+  if(!notesRaw){toast('请先设置密码');return}
+  const p=$('#notePwd').value;
+  if(!p){toast('请输入密码');return}
+  if(await sha256(p)!==notesRaw.pwdHash){toast('密码错误');return}
+  try{
+    noteKey=await deriveKey(p,b642buf(notesRaw.salt));
+    notesPlain=[];
+    for(const it of notesRaw.items){
+      const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b642buf(it.iv)},noteKey,b642buf(it.ct));
+      notesPlain.push(JSON.parse(new TextDecoder().decode(pt)));
+    }
+    $('#notesLocked').style.display='none';
+    $('#notesUnlocked').style.display='block';
+    $('#notePwd').value='';
+    renderNotes();
+    toast('解锁成功');
+  }catch(e){toast('解密失败：'+e.message)}
+}
+function lockNotes(){
+  noteKey=null;notesPlain=[];
+  $('#notesUnlocked').style.display='none';
+  $('#notesLocked').style.display='block';
+  toast('已锁定');
+}
+function renderNotes(){
+  const el=$('#noteList');
+  if(!notesPlain.length){el.innerHTML='<div class="empty" style="padding:40px 20px"><div style="font-size:36px;margin-bottom:8px">📝</div>暂无笔记<br><span style="font-size:12px">点击右上角「＋ 新笔记」开始记录</span></div>';return}
+  notesPlain.sort((a,b)=>b.date.localeCompare(a.date));
+  el.innerHTML=notesPlain.map(n=>{
+    // 标题为空时用正文首句
+    const firstLine=(n.body||'').split('\n')[0].trim();
+    const displayTitle=n.title||firstLine.slice(0,40)||'无内容';
+    const hasTitle=!!n.title;
+    // 日期格式化
+    const d=new Date(n.date);
+    const dateStr=`${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    // 字数
+    const wordCount=(n.body||'').length;
+    return `
+    <div class="note-item" onclick="openNoteEditor('${n.id}')">
+      <button class="note-del" onclick="event.stopPropagation();delNoteById('${n.id}')" title="删除">×</button>
+      <div class="nt">${displayTitle}</div>
+      <div class="nd">${dateStr}<span class="nd-badge">${wordCount}字</span></div>
+      <div class="np">${(n.body||'').slice(0,160)}</div>
+    </div>`;
+  }).join('');
+}
+function openNoteEditor(id){
+  curNoteId=id||null;
+  const n=id?notesPlain.find(x=>x.id===id):null;
+  $('#noteEditorTitle').textContent=id?'📝 编辑笔记':'📝 新笔记';
+  $('#noteTitle').value=n?.title||'';
+  $('#noteBody').value=n?.body||'';
+  $('#noteDelBtn').style.display=id?'inline-flex':'none';
+  $('#modalNote').classList.add('show');
+}
+async function saveNote(){
+  const title=$('#noteTitle').value.trim(),body=$('#noteBody').value;
+  if(!body.trim()){toast('正文不能为空');return}
+  if(curNoteId){
+    const n=notesPlain.find(x=>x.id===curNoteId);
+    n.title=title;n.body=body;n.date=new Date().toISOString();
+  }else{
+    notesPlain.push({id:Date.now()+'',title,body,date:new Date().toISOString()});
+  }
+  await persistNotes();
+  closeModal('modalNote');renderNotes();toast('已保存并加密');
+}
+async function delNote(){
+  if(!confirm('确定删除此笔记？'))return;
+  notesPlain=notesPlain.filter(n=>n.id!==curNoteId);
+  await persistNotes();closeModal('modalNote');renderNotes();toast('已删除');
+}
+async function delNoteById(id){
+  if(!confirm('确定删除此笔记？'))return;
+  notesPlain=notesPlain.filter(n=>n.id!==id);
+  await persistNotes();renderNotes();toast('已删除');
+}
+async function persistNotes(){
+  const items=[];
+  for(const n of notesPlain){
+    const iv=crypto.getRandomValues(new Uint8Array(12));
+    const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},noteKey,new TextEncoder().encode(JSON.stringify(n)));
+    items.push({iv:buf2b64(iv),ct:buf2b64(ct)});
+  }
+  notesRaw.items=items;LS.set('notesEnc',notesRaw);
+}
+
+/* ============ 数据导出/导入 ============ */
+function exportData(){
+  const data={
+    version:2,
+    exportDate:new Date().toISOString(),
+    reports:LS.get('reports',[]),
+    meds:LS.get('meds',[]),
+    checkins:LS.get('checkins',[]),
+    workouts:LS.get('workouts',[]),
+    finance:LS.get('finance',null),
+    notesEnc:LS.get('notesEnc',null)
+  };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`工作台备份_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('备份已导出，请保存到手机文件');
+}
+function importData(file){
+  if(!file){return}
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const data=JSON.parse(r.result);
+      if(!data.version){toast('文件格式不正确');return}
+      if(!confirm('导入将覆盖当前所有数据，确定继续？'))return;
+      if(data.reports)LS.set('reports',data.reports);
+      if(data.meds)LS.set('meds',data.meds);
+      if(data.checkins)LS.set('checkins',data.checkins);
+      if(data.workouts)LS.set('workouts',data.workouts);
+      if(data.finance)LS.set('finance',data.finance);
+      if(data.notesEnc)LS.set('notesEnc',data.notesEnc);
+      toast('数据已导入，即将刷新');
+      setTimeout(()=>location.reload(),1500);
+    }catch(e){toast('导入失败：'+e.message)}
+  };
+  r.readAsText(file);
+}
+
+/* ============ 初始化 ============ */
+$('#woDate').value=todayStr();
+renderReports();renderMeds();renderCal();renderFinance();renderWorkouts();
+
+/* SW 已禁用，避免图标缓存问题 */
+</script>
+</body>
+</html>
