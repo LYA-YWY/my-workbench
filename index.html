@@ -72,6 +72,7 @@ nav.tabs button[data-tab="medical"].active{color:var(--m-med);background:var(--m
 nav.tabs button[data-tab="finance"].active{color:var(--m-fin);background:var(--m-fin-l);border-color:var(--m-fin)}
 nav.tabs button[data-tab="fitness"].active{color:var(--m-fit);background:var(--m-fit-l);border-color:var(--m-fit)}
 nav.tabs button[data-tab="notes"].active{color:var(--m-note);background:var(--m-note-l);border-color:var(--m-note)}
+nav.tabs button[data-tab="settings"].active{color:var(--accent);background:#f3e9ee;border-color:var(--accent)}
 .clock{color:var(--muted);font-size:11px;font-family:'JetBrains Mono',monospace;text-align:center;padding:8px 4px;border-top:1px solid var(--border);margin-top:auto}
 .backup-btns{display:flex;flex-direction:column;gap:4px;padding-top:8px;border-top:1px solid var(--border);margin-top:4px}
 .backup-btns .btn{font-size:12px;justify-content:center}
@@ -118,6 +119,7 @@ main{margin-left:200px;padding:24px;padding-top:max(24px,env(safe-area-inset-top
   nav.tabs button[data-tab="finance"].active::before{background:var(--m-fin)}
   nav.tabs button[data-tab="fitness"].active::before{background:var(--m-fit)}
   nav.tabs button[data-tab="notes"].active::before{background:var(--m-note)}
+  nav.tabs button[data-tab="settings"].active::before{background:var(--accent)}
   .clock{display:none}
   .backup-btns{display:none}
   main{margin-left:0;margin-bottom:70px;padding:14px}
@@ -147,6 +149,8 @@ main{margin-left:200px;padding:24px;padding-top:max(24px,env(safe-area-inset-top
 #panel-fitness .stat-mini .num{color:var(--m-fit)}
 #panel-notes .panel-head h2{color:var(--m-note)}
 #panel-notes .card{border-left:3px solid var(--m-note)}
+#panel-settings .panel-head h2{color:var(--accent)}
+#panel-settings .card{border-left:3px solid var(--accent)}
 .lock-screen .lock-ico{color:var(--m-note)}
 
 /* ===== 按钮 / 表单 ===== */
@@ -281,21 +285,12 @@ label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}
     <button data-tab="finance"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8M21 7v6h-6"/></svg></span><span>财经</span></button>
     <button data-tab="fitness"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><rect x="6" y="10" width="2" height="4"/><rect x="16" y="10" width="2" height="4"/><path d="M8 12h8"/></svg></span><span>健身</span></button>
     <button data-tab="notes"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a2 2 0 012-2h12a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/><path d="M8 2v20"/><path d="M11 7h6M11 11h6M11 15h4"/></svg></span><span>笔记</span></button>
+    <button data-tab="settings"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span><span>设置</span></button>
   </nav>
   <div class="clock" id="clock">--</div>
-  <div class="backup-btns">
-    <button class="btn ghost sm" onclick="exportData()" title="导出备份数据">💾 备份</button>
-    <button class="btn ghost sm" onclick="document.getElementById('importFile').click()" title="导入恢复数据">📂 恢复</button>
-    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this.files[0])">
-  </div>
 </header>
 
 <main>
-<div class="mobile-backup">
-  <button class="btn ghost sm" onclick="exportData()">💾</button>
-  <button class="btn ghost sm" onclick="document.getElementById('importFile2').click()">📂</button>
-  <input type="file" id="importFile2" accept=".json" style="display:none" onchange="importData(this.files[0])">
-</div>
 
 <!-- ===================== 医疗 ===================== -->
 <section class="panel active" id="panel-medical">
@@ -459,6 +454,51 @@ label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}
       </div>
     </div>
     <div id="noteList"></div>
+  </div>
+</section>
+
+<!-- ===================== 设置 ===================== -->
+<section class="panel" id="panel-settings">
+  <div class="panel-head">
+    <h2>⚙️ 设置</h2>
+    <span class="sub">数据备份 · 恢复 · 关于</span>
+  </div>
+  <div class="grid g-2">
+    <!-- 数据备份 -->
+    <div class="card">
+      <h3><span class="ico">💾</span>数据备份</h3>
+      <p class="muted" style="font-size:13px;margin-bottom:14px">导出全部数据（报告、用药、打卡、训练、财经、笔记）为 JSON 文件，保存到手机或电脑。</p>
+      <button class="btn primary" onclick="exportData()">💾 导出备份数据</button>
+      <div class="hint">建议每周备份一次，清除浏览器数据后可凭备份恢复</div>
+    </div>
+
+    <!-- 数据恢复 -->
+    <div class="card">
+      <h3><span class="ico">📂</span>数据恢复</h3>
+      <p class="muted" style="font-size:13px;margin-bottom:14px">选择之前导出的 JSON 备份文件，恢复全部数据。<b style="color:var(--danger)">注意：会覆盖现有数据</b></p>
+      <button class="btn" onclick="document.getElementById('importFile').click()">📂 选择备份文件恢复</button>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this.files[0])">
+    </div>
+
+    <!-- 关于 -->
+    <div class="card">
+      <h3><span class="ico">ℹ️</span>关于</h3>
+      <div style="font-size:13px;line-height:2">
+        <div>应用名称：<b>AYY 工作台</b></div>
+        <div>当前版本：<span class="mono" id="verShow">--</span></div>
+        <div>数据存储：浏览器本地（localStorage + AES-GCM加密笔记）</div>
+        <div>托管平台：腾讯云 CloudBase（上海）</div>
+        <div>访问地址：<span class="mono" style="font-size:11px;word-break:break-all">tcloudbaseapp.com</span></div>
+      </div>
+    </div>
+
+    <!-- 更新 -->
+    <div class="card">
+      <h3><span class="ico">🔄</span>检查更新</h3>
+      <p class="muted" style="font-size:13px;margin-bottom:14px">每次打开工作台会自动检查新版本。也可以手动检查：</p>
+      <button class="btn" onclick="manualCheckUpdate()">🔄 手动检查更新</button>
+      <div class="hint" id="updateStatus" style="margin-top:8px"></div>
+    </div>
   </div>
 </section>
 
@@ -1197,26 +1237,40 @@ function importData(file){
 }
 
 /* ============ 自动更新检测 ============ */
-const APP_VERSION = '20260730-1'; // 版本号，每次更新递增
-async function checkUpdate(){
+const APP_VERSION = '20260730-2'; // 版本号，每次更新递增
+async function checkUpdate(silent){
   try{
     const res = await fetch('https://lyayy-0617-d8gn8knmd4b948f97-1460236867.tcloudbaseapp.com/index.html?v='+Date.now(),{cache:'no-store'});
     const txt = await res.text();
     const m = txt.match(/APP_VERSION\s*=\s*'([^']+)'/);
     if(m && m[1] !== APP_VERSION){
-      // 有新版本，提示用户刷新
-      if(confirm('工作台有新版本，是否立即更新？')){
-        localStorage.removeItem('finance'); // 清除旧财经缓存
+      if(silent){
+        if(confirm('工作台有新版本，是否立即更新？')){
+          localStorage.removeItem('finance');
+          location.reload(true);
+        }
+      }else{
+        $('#updateStatus').innerHTML = '<span style="color:var(--accent)">发现新版本 v'+m[1]+'，正在更新...</span>';
+        localStorage.removeItem('finance');
         location.reload(true);
       }
+    }else{
+      if(!silent) $('#updateStatus').innerHTML = '<span style="color:#3a8b5a">✓ 当前已是最新版本</span>';
     }
-  }catch(e){ /* 离线时静默失败 */ }
+  }catch(e){
+    if(!silent) $('#updateStatus').innerHTML = '<span style="color:var(--muted)">检查失败，请检查网络连接</span>';
+  }
+}
+function manualCheckUpdate(){
+  $('#updateStatus').innerHTML = '<span style="color:var(--muted)">正在检查...</span>';
+  checkUpdate(false);
 }
 // 每次打开时静默检查更新（延迟2秒，不阻塞页面加载）
-setTimeout(checkUpdate, 2000);
+setTimeout(()=>checkUpdate(true), 2000);
 
 /* ============ 初始化 ============ */
 $('#woDate').value=todayStr();
+$('#verShow').textContent = APP_VERSION;
 renderReports();renderMeds();renderCal();renderFinance();renderWorkouts();
 
 /* SW 已禁用，避免图标缓存问题 */
