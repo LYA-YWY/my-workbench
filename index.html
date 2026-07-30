@@ -673,11 +673,364 @@ function viewReport(id){
   let html='';
   if(r.type.startsWith('image/'))html+=`<img src="${r.data}" style="width:100%;border-radius:10px;margin-bottom:12px">`;
   else html+=`<div class="empty">PDF文件：${r.name}</div>`;
-  html+=`<label>我的解读/医嘱备注</label><textarea id="interpretText" rows="6">${r.interpret||''}</textarea>
-         <div class="hint">提示：上传报告后，可让我（WorkBuddy）帮你看报告内容并填写解读，把解读文字粘贴到这里保存。</div>`;
+
+  // 内置解读模板选择器
+  html+=`<label>📋 快速解读模板</label>
+  <select id="reportTemplate" onchange="applyTemplate()" style="width:100%;padding:9px;border:1px solid var(--border);border-radius:10px;margin-bottom:12px;font-size:13px;font-family:inherit;background:var(--card-2)">
+    <option value="">-- 选择报告类型自动生成解读框架 --</option>
+    <option value="vaginal">白带/阴道微生态检查</option>
+    <option value="blood">血常规</option>
+    <option value="liver">肝功能</option>
+    <option value="kidney">肾功能</option>
+    <option value="glucose">血糖/糖化</option>
+    <option value="thyroid">甲状腺功能</option>
+    <option value="tumor">肿瘤标志物</option>
+    <option value="ultrasound">B超/彩超</option>
+    <option value="hormone">性激素六项</option>
+  </select>
+  <div id="templateInputs"></div>`;
+
+  html+=`<label>📝 解读/医嘱备注</label><textarea id="interpretText" rows="8" style="margin-top:8px">${r.interpret||''}</textarea>
+         <div class="hint">💡 选择上方报告类型，填入关键数值，点击"生成解读"自动填充。也可手动编辑。</div>`;
   $('#reportDetail').innerHTML=html;
   $('#modalReport').classList.add('show');
 }
+
+function applyTemplate(){
+  const t=$('#reportTemplate').value;
+  const el=$('#templateInputs');
+  if(!t){el.innerHTML='';return}
+
+  const templates={
+    vaginal:()=>`
+      <div class="card" style="margin-bottom:12px;background:var(--m-med-l);border:1px solid var(--border)">
+        <h3 style="font-size:14px;margin-bottom:10px">🦠 白带/阴道微生态</h3>
+        <div style="display:grid;gap:6px;font-size:13px">
+          <label>pH值 <input id="t_ph" placeholder="如4.6" style="width:80px"></label>
+          <label>过氧化氢 <select id="t_h2o2"><option value="">选择</option><option value="阳性+">阳性+</option><option value="阴性-">阴性-</option></select></label>
+          <label>白细胞 <select id="t_wbc"><option value="">选择</option><option value="-">-</option><option value="+">+</option><option value="++">++</option><option value="+++">+++</option></select></label>
+          <label>清洁度 <select id="t_clean"><option value="">选择</option><option value="I度">I度</option><option value="II度">II度</option><option value="III度">III度</option><option value="IV度">IV度</option></select></label>
+          <label>乳酸杆菌比例 <input id="t_lacto" placeholder="如25%" style="width:80px"></label>
+          <label>真菌 <select id="t_fungus"><option value="">选择</option><option value="-">阴性</option><option value="+">阳性</option></select></label>
+          <label>滴虫 <select id="t_trich"><option value="">选择</option><option value="-">阴性</option><option value="+">阳性</option></select></label>
+          <button class="btn primary sm" style="margin-top:6px" onclick="genVaginalReport()">生成解读</button>
+        </div>
+      </div>`,
+
+    blood:()=>`
+      <div class="card" style="margin-bottom:12px;background:var(--m-med-l);border:1px solid var(--border)">
+        <h3 style="font-size:14px;margin-bottom:10px">🩸 血常规</h3>
+        <div style="display:grid;gap:6px;font-size:13px">
+          <label>白细胞WBC <input id="t_wbc" placeholder="正常4-10" style="width:80px"></label>
+          <label>红细胞RBC <input id="t_rbc" placeholder="正常3.5-5.5" style="width:80px"></label>
+          <label>血红蛋白Hb <input id="t_hb" placeholder="正常110-150" style="width:80px"></label>
+          <label>血小板PLT <input id="t_plt" placeholder="正常100-300" style="width:80px"></label>
+          <label>中性粒细胞% <input id="t_neut" placeholder="正常50-70%" style="width:80px"></label>
+          <label>淋巴细胞% <input id="t_lymph" placeholder="正常20-40%" style="width:80px"></label>
+          <button class="btn primary sm" style="margin-top:6px" onclick="genBloodReport()">生成解读</button>
+        </div>
+      </div>`,
+
+    liver:()=>`
+      <div class="card" style="margin-bottom:12px;background:var(--m-med-l);border:1px solid var(--border)">
+        <h3 style="font-size:14px;margin-bottom:10px">🟡 肝功能</h3>
+        <div style="display:grid;gap:6px;font-size:13px">
+          <label>谷丙ALT <input id="t_alt" placeholder="正常<40" style="width:80px"></label>
+          <label>谷草AST <input id="t_ast" placeholder="正常<40" style="width:80px"></label>
+          <label>总胆红素 <input id="t_tbil" placeholder="正常5-21" style="width:80px"></label>
+          <label>直接胆红素 <input id="t_dbil" placeholder="正常<7" style="width:80px"></label>
+          <label>白蛋白 <input id="t_alb" placeholder="正常35-55" style="width:80px"></label>
+          <button class="btn primary sm" style="margin-top:6px" onclick="genLiverReport()">生成解读</button>
+        </div>
+      </div>`,
+
+    kidney:()=>`
+      <div class="card" style="margin-bottom:12px;background:var(--m-med-l);border:1px solid var(--border)">
+        <h3 style="font-size:14px;margin-bottom:10px">🟤 肾功能</h3>
+        <div style="display:grid;gap:6px;font-size:13px">
+          <label>肌酐 <input id="t_cr" placeholder="正常44-115" style="width:80px"></label>
+          <label>尿素 <input id="t_bun" placeholder="正常2.6-7.5" style="width:80px"></label>
+          <label>尿酸 <input id="t_ua" placeholder="正常149-416" style="width:80px"></label>
+          <label>胱抑素C <input id="t_cys" placeholder="正常0.5-1.1" style="width:80px"></label>
+          <button class="btn primary sm" style="margin-top:6px" onclick="genKidneyReport()">生成解读</button>
+        </div>
+      </div>`,
+
+    glucose:()=>`
+      <div class="card" style="margin-bottom:12px;background:var(--m-med-l);border:1px solid var(--border)">
+        <h3 style="font-size:14px;margin-bottom:10px">🍬 血糖/糖化</h3>
+        <div style="display:grid;gap:6px;font-size:13px">
+          <label>空腹血糖 <input id="t_fbg" placeholder="正常3.9-6.1" style="width:80px"></label>
+          <label>餐后2h血糖 <input id="t_pbg" placeholder="正常<7.8" style="width:80px"></label>
+          <label>糖化血红蛋白 <input id="t_hba1c" placeholder="正常<6.0%" style="width:80px"></label>
+          <button class="btn primary sm" style="margin-top:6px" onclick="genGlucoseReport()">生成解读</button>
+        </div>
+      </div>`,
+
+    thyroid:()=>`
+      <div class="card" style="margin-bottom:12px;background:var(--m-med-l);border:1px solid var(--border)">
+        <h3 style="font-size:14px;margin-bottom:10px">🦋 甲状腺功能</h3>
+        <div style="display:grid;gap:6px;font-size:13px">
+          <label>TSH <input id="t_tsh" placeholder="正常0.4-4.0" style="width:80px"></label>
+          <label>FT3 <input id="t_ft3" placeholder="正常3.5-6.5" style="width:80px"></label>
+          <label>FT4 <input id="t_ft4" placeholder="正常11.5-22.7" style="width:80px"></label>
+          <label>抗甲状腺过氧化物酶TPOAb <input id="tpoab" placeholder="正常<34" style="width:80px"></label>
+          <button class="btn primary sm" style="margin-top:6px" onclick="genThyroidReport()">生成解读</button>
+        </div>
+      </div>`,
+
+    tumor:()=>`
+      <div class="card" style="margin-bottom:12px;background:var(--m-med-l);border:1px solid var(--border)">
+        <h3 style="font-size:14px;margin-bottom:10px">📊 肿瘤标志物</h3>
+        <div style="display:grid;gap:6px;font-size:13px">
+          <label>AFP 甲胎蛋白 <input id="t_afp" placeholder="正常<7" style="width:80px"></label>
+          <label>CEA 癌胚抗原 <input id="t_cea" placeholder="正常<5" style="width:80px"></label>
+          <label>CA125 <input id="t_ca125" placeholder="正常<35" style="width:80px"></label>
+          <label>CA199 <input id="t_ca199" placeholder="正常<37" style="width:80px"></label>
+          <label>CA153 <input id="t_ca153" placeholder="正常<25" style="width:80px"></label>
+          <label>HE4 <input id="t_he4" placeholder="正常<140" style="width:80px"></label>
+          <button class="btn primary sm" style="margin-top:6px" onclick="genTumorReport()">生成解读</button>
+        </div>
+      </div>`,
+
+    ultrasound:()=>`
+      <div class="card" style="margin-bottom:12px;background:var(--m-med-l);border:1px solid var(--border)">
+        <h3 style="font-size:14px;margin-bottom:10px">🔊 B超/彩超</h3>
+        <div style="display:grid;gap:6px;font-size:13px">
+          <label>检查部位 <input id="t_part" placeholder="如：子宫/附件/肝胆" style="width:160px"></label>
+          <label>关键描述 <textarea id="t_desc" rows="3" placeholder="输入B超报告中的关键描述文字" style="width:100%"></textarea></label>
+          <button class="btn primary sm" style="margin-top:6px" onclick="genUltrasoundReport()">生成解读</button>
+        </div>
+      </div>`,
+
+    hormone:()=>`
+      <div class="card" style="margin-bottom:12px;background:var(--m-med-l);border:1px solid var(--border)">
+        <h3 style="font-size:14px;margin-bottom:10px">🧬 性激素六项</h3>
+        <div style="display:grid;gap:6px;font-size:13px">
+          <label>FSH 卵泡刺激素 <input id="t_fsh" placeholder="正常5-20" style="width:80px"></label>
+          <label>LH 黄体生成素 <input id="t_lh" placeholder="正常5-20" style="width:80px"></label>
+          <label>E2 雌二醇 <input id="t_e2" placeholder="正常20-100(早卵泡期)" style="width:120px"></label>
+          <label>PRL 泌乳素 <input id="t_prl" placeholder="正常3-25" style="width:80px"></label>
+          <label>T 睾酮 <input id="t_testo" placeholder="正常0.1-0.75" style="width:80px"></label>
+          <label>PROG 孕酮 <input id="t_prog" placeholder="正常0.3-1.5(早卵泡期)" style="width:120px"></label>
+          <button class="btn primary sm" style="margin-top:6px" onclick="genHormoneReport()">生成解读</button>
+        </div>
+      </div>`
+  };
+
+  el.innerHTML=templates[t]?templates[t]():'';
+}
+
+// ===== 解读生成函数 =====
+function genVaginalReport(){
+  const ph=v('t_ph'),h2o2=v('t_h2o2'),wbc=v('t_wbc'),clean=v('t_clean'),lacto=v('t_lacto'),fungus=v('t_fungus'),trich=v('t_trich');
+  let result='【阴道微生态解读】\n';
+  // 综合判断
+  let issues=[];
+  if(ph&&parseFloat(ph)>=4.6)issues.push('pH偏高（≥4.6），阴道环境偏碱');
+  if(h2o2==='阳性+')issues.push('过氧化氢阳性，乳酸杆菌不足');
+  if(wbc&&wbc!=='-')issues.push('白细胞'+wbc+'，有炎症反应');
+  if(clean==='III度'||clean==='IV度')issues.push('清洁度'+clean+'，低于正常');
+  if(lacto&&parseInt(lacto)<50)issues.push('乳酸杆菌比例偏低（'+lacto+'），菌群失调');
+  if(fungus==='+')issues.push('真菌阳性，提示霉菌性阴道炎');
+  if(trich==='+')issues.push('滴虫阳性，提示滴虫性阴道炎');
+
+  if(issues.length===0){
+    result+='✅ 各项指标在正常范围，阴道微生态平衡。\n';
+  }else{
+    result+='⚠️ 发现以下异常：\n';
+    issues.forEach((s,i)=>result+=(i+1)+'. '+s+'\n');
+    // 诊断判断
+    if(fungus==='+')result+='\n诊断倾向：霉菌性阴道炎\n建议：抗真菌治疗（克霉唑/制霉菌素）\n';
+    else if(trich==='+')result+='\n诊断倾向：滴虫性阴道炎\n建议：甲硝唑/替硝唑治疗\n';
+    else if(ph&&parseFloat(ph)>=4.6&&h2o2==='阳性+')result+='\n诊断倾向：细菌性阴道病（BV）\n建议：甲硝唑/奥硝唑治疗+乳酸杆菌恢复菌群\n';
+    else if(wbc&&wbc!=='-')result+='\n诊断倾向：阴道炎\n建议：进一步检查明确病原体\n';
+    else result+='\n诊断倾向：微生态失调\n建议：乳酸杆菌制剂恢复菌群，注意卫生\n';
+  }
+  result+='\n注意：本解读仅供参考，具体用药请遵医嘱。';
+  $('#interpretText').value=result;
+  toast('解读已生成，可在下方编辑修改');
+}
+
+function genBloodReport(){
+  const wbc=v('t_wbc'),rbc=v('t_rbc'),hb=v('t_hb'),plt=v('t_plt'),neut=v('t_neut'),lymph=v('t_lymph');
+  let result='【血常规解读】\n';
+  let issues=[];
+  if(wbc){
+    const n=parseFloat(wbc);
+    if(n>10)issues.push('白细胞'+wbc+'偏高，提示可能感染/炎症');
+    else if(n<4)issues.push('白细胞'+wbc+'偏低，免疫力可能偏低');
+  }
+  if(hb){
+    const n=parseFloat(hb);
+    if(n<110)issues.push('血红蛋白'+hb+'偏低，提示贫血（'+(n<90?'中度':'轻度')+'）');
+    else if(n>160)issues.push('血红蛋白'+hb+'偏高，建议排除血液浓缩');
+  }
+  if(rbc){
+    const n=parseFloat(rbc);
+    if(n<3.5)issues.push('红细胞'+rbc+'偏低');
+  }
+  if(plt){
+    const n=parseFloat(plt);
+    if(n<100)issues.push('血小板'+plt+'偏低，注意出血风险');
+    else if(n>400)issues.push('血小板'+plt+'偏高');
+  }
+  if(neut){
+    const n=parseFloat(neut);
+    if(n>75)issues.push('中性粒细胞'+neut+'偏高，提示细菌感染可能');
+    else if(n<50)issues.push('中性粒细胞'+neut+'偏低');
+  }
+  if(lymph){
+    const n=parseFloat(lymph);
+    if(n>40)issues.push('淋巴细胞'+lymph+'偏高，提示病毒感染可能');
+  }
+  if(issues.length===0)result+='✅ 各项指标在正常范围。\n';
+  else{result+='⚠️ 发现以下异常：\n';issues.forEach((s,i)=>result+=(i+1)+'. '+s+'\n');}
+  result+='\n注意：本解读仅供参考，具体请遵医嘱。';
+  $('#interpretText').value=result;
+  toast('解读已生成');
+}
+
+function genLiverReport(){
+  const alt=v('t_alt'),ast=v('t_ast'),tbil=v('t_tbil'),dbil=v('t_dbil'),alb=v('t_alb');
+  let result='【肝功能解读】\n';
+  let issues=[];
+  if(alt&&parseFloat(alt)>40)issues.push('ALT '+alt+'偏高，肝细胞损伤');
+  if(ast&&parseFloat(ast)>40)issues.push('AST '+ast+'偏高');
+  if(alt&&ast&&parseFloat(alt)>40&&parseFloat(ast)>40){
+    const r=parseFloat(ast)/parseFloat(alt);
+    if(r>2)issues.push('AST/ALT>2，提示酒精性肝损伤可能');
+    else if(r<1)issues.push('AST/ALT<1，提示病毒性肝炎可能');
+  }
+  if(tbil&&parseFloat(tbil)>21)issues.push('总胆红素'+tbil+'偏高，黄疸可能');
+  if(alb&&parseFloat(alb)<35)issues.push('白蛋白'+alb+'偏低');
+  if(issues.length===0)result+='✅ 肝功能各项正常。\n';
+  else{result+='⚠️ 发现以下异常：\n';issues.forEach((s,i)=>result+=(i+1)+'. '+s+'\n');}
+  result+='\n注意：本解读仅供参考，具体请遵医嘱。';
+  $('#interpretText').value=result;
+  toast('解读已生成');
+}
+
+function genKidneyReport(){
+  const cr=v('t_cr'),bun=v('t_bun'),ua=v('t_ua'),cys=v('t_cys');
+  let result='【肾功能解读】\n';
+  let issues=[];
+  if(cr&&parseFloat(cr)>115)issues.push('肌酐'+cr+'偏高，肾功能可能受损');
+  if(bun&&parseFloat(bun)>7.5)issues.push('尿素'+bun+'偏高');
+  if(ua&&parseFloat(ua)>416)issues.push('尿酸'+ua+'偏高，痛风风险');
+  if(cys&&parseFloat(cys)>1.1)issues.push('胱抑素C '+cys+'偏高，早期肾损伤指标');
+  if(issues.length===0)result+='✅ 肾功能各项正常。\n';
+  else{result+='⚠️ 发现以下异常：\n';issues.forEach((s,i)=>result+=(i+1)+'. '+s+'\n');}
+  result+='\n注意：本解读仅供参考，具体请遵医嘱。';
+  $('#interpretText').value=result;
+  toast('解读已生成');
+}
+
+function genGlucoseReport(){
+  const fbg=v('t_fbg'),pbg=v('t_pbg'),hba1c=v('t_hba1c');
+  let result='【血糖/糖化解读】\n';
+  let issues=[];
+  if(fbg){
+    const n=parseFloat(fbg);
+    if(n>=7.0)issues.push('空腹血糖'+fbg+'≥7.0，糖尿病标准');
+    else if(n>=6.1)issues.push('空腹血糖'+fbg+'在6.1-7.0，空腹血糖受损');
+    else if(n>=5.6)issues.push('空腹血糖'+fbg+'在5.6-6.1，正常高值');
+  }
+  if(pbg){
+    const n=parseFloat(pbg);
+    if(n>=11.1)issues.push('餐后2h血糖'+pbg+'≥11.1，糖尿病标准');
+    else if(n>=7.8)issues.push('餐后2h血糖'+pbg+'在7.8-11.1，糖耐量异常');
+  }
+  if(hba1c){
+    const n=parseFloat(hba1c);
+    if(n>=6.5)issues.push('糖化血红蛋白'+hba1c+'≥6.5%，糖尿病标准');
+    else if(n>=6.0)issues.push('糖化血红蛋白'+hba1c+'在6.0-6.5%，糖尿病前期');
+  }
+  if(issues.length===0)result+='✅ 血糖指标正常。\n';
+  else{result+='⚠️ 发现以下异常：\n';issues.forEach((s,i)=>result+=(i+1)+'. '+s+'\n');}
+  result+='\n建议：控制饮食、适量运动、定期监测。本解读仅供参考，请遵医嘱。';
+  $('#interpretText').value=result;
+  toast('解读已生成');
+}
+
+function genThyroidReport(){
+  const tsh=v('t_tsh'),ft3=v('t_ft3'),ft4=v('t_ft4'),tpoab=v('tpoab');
+  let result='【甲状腺功能解读】\n';
+  let issues=[];
+  if(tsh&&ft3&&ft4){
+    const t=parseFloat(tsh),f3=parseFloat(ft3),f4=parseFloat(ft4);
+    if(t>4.0&&f3<3.5&&f4<11.5)issues.push('TSH偏高+FT3/FT4偏低，提示甲减');
+    else if(t<0.4&&(f3>6.5||f4>22.7))issues.push('TSH偏低+FT3/FT4偏高，提示甲亢');
+    else if(t>4.0)issues.push('TSH偏高，亚临床甲减可能');
+    else if(t<0.4)issues.push('TSH偏低，亚临床甲亢可能');
+  }
+  if(tpoab&&parseFloat(tpoab)>34)issues.push('TPOAb '+tpoab+'偏高，桥本甲状腺炎可能');
+  if(issues.length===0)result+='✅ 甲状腺功能正常。\n';
+  else{result+='⚠️ 发现以下异常：\n';issues.forEach((s,i)=>result+=(i+1)+'. '+s+'\n');}
+  result+='\n注意：本解读仅供参考，请遵医嘱。';
+  $('#interpretText').value=result;
+  toast('解读已生成');
+}
+
+function genTumorReport(){
+  const afp=v('t_afp'),cea=v('t_cea'),ca125=v('t_ca125'),ca199=v('t_ca199'),ca153=v('t_ca153'),he4=v('t_he4');
+  let result='【肿瘤标志物解读】\n';
+  let issues=[];
+  if(afp&&parseFloat(afp)>7)issues.push('AFP '+afp+'偏高，需排除肝脏问题');
+  if(cea&&parseFloat(cea)>5)issues.push('CEA '+cea+'偏高，需进一步检查');
+  if(ca125&&parseFloat(ca125)>35)issues.push('CA125 '+ca125+'偏高，需排除卵巢/子宫内膜问题');
+  if(ca199&&parseFloat(ca199)>37)issues.push('CA199 '+ca199+'偏高，需排除胰腺/消化系统问题');
+  if(ca153&&parseFloat(ca153)>25)issues.push('CA153 '+ca153+'偏高，需排除乳腺问题');
+  if(he4&&parseFloat(he4)>140)issues.push('HE4 '+he4+'偏高，需排除卵巢问题');
+  if(issues.length===0)result+='✅ 各项肿瘤标志物在正常范围。\n';
+  else{result+='⚠️ 发现以下异常：\n';issues.forEach((s,i)=>result+=(i+1)+'. '+s+'\n');result+='\n⚠️ 肿瘤标志物轻度升高不一定代表肿瘤，炎症、生理期等也可导致升高，需结合其他检查综合判断。\n';}
+  result+='\n注意：本解读仅供参考，请遵医嘱。';
+  $('#interpretText').value=result;
+  toast('解读已生成');
+}
+
+function genUltrasoundReport(){
+  const part=v('t_part'),desc=v('t_desc');
+  let result='【B超解读 - '+(part||'未注明部位')+'】\n';
+  result+='报告描述：'+(desc||'（未填写）')+'\n\n';
+  result+='⚠️ B超解读需要结合具体描述和临床情况，建议带报告咨询专科医生。\n';
+  result+='常见关注点：\n- 子宫：大小、内膜厚度、有无肌瘤/息肉\n- 卵巢：大小、有无囊肿/占位\n- 肝胆：有无结石/囊肿/脂肪肝\n';
+  result+='\n注意：本解读仅供参考，请遵医嘱。';
+  $('#interpretText').value=result;
+  toast('解读已生成');
+}
+
+function genHormoneReport(){
+  const fsh=v('t_fsh'),lh=v('t_lh'),e2=v('t_e2'),prl=v('t_prl'),testo=v('t_testo'),prog=v('t_prog');
+  let result='【性激素六项解读】\n';
+  let issues=[];
+  if(fsh){
+    const n=parseFloat(fsh);
+    if(n>20)issues.push('FSH '+fsh+'偏高，卵巢储备功能可能下降');
+    else if(n<5)issues.push('FSH '+fsh+'偏低');
+  }
+  if(fsh&&lh){
+    const r=parseFloat(lh)/parseFloat(fsh);
+    if(r>2)issues.push('LH/FSH>2，多囊卵巢综合征(PCOS)可能');
+    else if(r<0.5)issues.push('LH/FSH<0.5，可能影响排卵');
+  }
+  if(prl){
+    const n=parseFloat(prl);
+    if(n>25)issues.push('泌乳素'+prl+'偏高，高泌乳素血症');
+  }
+  if(testo&&parseFloat(testo)>0.75)issues.push('睾酮'+testo+'偏高，PCOS可能');
+  if(prog){
+    const n=parseFloat(prog);
+    if(n<0.3)issues.push('孕酮'+prog+'偏低');
+  }
+  if(issues.length===0)result+='✅ 性激素各项在正常范围。\n';
+  else{result+='⚠️ 发现以下异常：\n';issues.forEach((s,i)=>result+=(i+1)+'. '+s+'\n');}
+  result+='\n注意：性激素需结合月经周期解读（早卵泡期/排卵期/黄体期），本解读仅供参考，请遵医嘱。';
+  $('#interpretText').value=result;
+  toast('解读已生成');
+}
+
+function v(id){const el=document.getElementById(id);return el?el.value.trim():''}
 let curReportId=null;
 function saveReportInterpret(){
   const r=reports.find(x=>x.id===curReportId);if(!r)return;
