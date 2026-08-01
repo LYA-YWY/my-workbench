@@ -20,20 +20,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#faf6f8; --bg-2:#ffffff; --card:#ffffff; --card-2:#f5eef0;
-  --border:#e8d5da; --text:#3d2b2e; --muted:#8a6469; --dim:#b89aa0;
+  --bg:#fbf6f3; --bg-2:#ffffff; --card:#ffffff; --card-2:#f5ece8;
+  --border:#ead8d2; --text:#4a3030; --muted:#9a7a78; --dim:#c4a8a2;
   --radius:14px;
-  /* 5元人民币紫红色系主题 */
-  --m-med:#8b4a6b;    /* 医疗-紫梅 */
-  --m-med-l:#f3e9ee;
-  --m-fin:#a04545;    /* 财经-酒红 */
-  --m-fin-l:#f5ebea;
-  --m-fit:#b8693a;    /* 健身-古铜 */
-  --m-fit-l:#f7efe6;
-  --m-note:#7a5d8b;   /* 笔记-绛紫 */
-  --m-note-l:#f0ebf3;
-  --accent:#9a2e5e; --accent-2:#a04545; --warn:#d4925a; --danger:#c44545;
-  --pink:#b86b8b; --gold:#c4a050;
+  /* 玫瑰花束主题（粉·豆沙·米白·原木） */
+  --m-med:#b86b8b;    /* 医疗-玫瑰粉 */
+  --m-med-l:#faeef2;
+  --m-fin:#a86a6a;    /* 财经-豆沙粉 */
+  --m-fin-l:#f9eeed;
+  --m-fit:#b8895a;    /* 健身-原木色 */
+  --m-fit-l:#f6efe4;
+  --m-note:#a07a98;   /* 笔记-藕荷紫 */
+  --m-note-l:#f5eff3;
+  --accent:#c47a96;   /* 主题色-玫瑰粉 */
+  --accent-2:#a86a6a; /* 主题色-豆沙粉 */
+  --warn:#d4a574; --danger:#c47272;
+  --pink:#d49ab0; --gold:#c4a080;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -496,45 +498,49 @@ details>summary:active{background:var(--card-2)}
 <section class="panel" id="panel-settings">
   <div class="panel-head">
     <h2>⚙️ 设置</h2>
-    <span class="sub">数据备份 · 恢复 · 关于</span>
+    <span class="sub">数据备份 · 恢复 · 更新 · 关于</span>
   </div>
-  <div class="grid g-2">
-    <!-- 数据备份 -->
-    <div class="card">
-      <h3><span class="ico">💾</span>数据备份</h3>
-      <p class="muted" style="font-size:13px;margin-bottom:14px">导出全部数据（报告、用药、打卡、训练、财经、笔记）为 JSON 文件，保存到手机或电脑。</p>
-      <button class="btn primary" onclick="exportData()">💾 导出备份数据</button>
-      <div class="hint">建议每周备份一次，清除浏览器数据后可凭备份恢复</div>
-    </div>
 
-    <!-- 数据恢复 -->
-    <div class="card">
-      <h3><span class="ico">📂</span>数据恢复</h3>
-      <p class="muted" style="font-size:13px;margin-bottom:14px">选择之前导出的 JSON 备份文件，恢复全部数据。<b style="color:var(--danger)">注意：会覆盖现有数据</b></p>
-      <button class="btn" onclick="document.getElementById('importFile').click()">📂 选择备份文件恢复</button>
-      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this.files[0])">
-    </div>
-
-    <!-- 关于 -->
-    <div class="card">
-      <h3><span class="ico">ℹ️</span>关于</h3>
-      <div style="font-size:13px;line-height:2">
-        <div>应用名称：<b>AYY 工作台</b></div>
-        <div>当前版本：<span class="mono" id="verShow">--</span></div>
-        <div>数据存储：浏览器本地（localStorage + AES-GCM加密笔记）</div>
-        <div>托管平台：腾讯云 CloudBase（上海）</div>
-        <div>访问地址：<span class="mono" style="font-size:11px;word-break:break-all">tcloudbaseapp.com</span></div>
+  <!-- 设置主页：入口卡片列表 -->
+  <div id="settingsHome">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div onclick="openSettingPage('backup')" style="cursor:pointer;padding:16px 18px;border:1.5px solid var(--border);border-radius:12px;background:var(--m-med-l);transition:.2s;display:flex;align-items:center;gap:14px" onmouseover="this.style.borderColor='var(--m-med)';this.style.transform='translateX(2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateX(0)'">
+        <span style="font-size:26px">💾</span>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:600;color:var(--m-med)">数据备份</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">导出全部数据为 JSON 文件</div>
+        </div>
+        <span style="color:var(--muted);font-size:18px">›</span>
+      </div>
+      <div onclick="openSettingPage('restore')" style="cursor:pointer;padding:16px 18px;border:1.5px solid var(--border);border-radius:12px;background:var(--m-fin-l);transition:.2s;display:flex;align-items:center;gap:14px" onmouseover="this.style.borderColor='var(--m-fin)';this.style.transform='translateX(2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateX(0)'">
+        <span style="font-size:26px">📂</span>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:600;color:var(--m-fin)">数据恢复</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">从备份文件恢复（会覆盖现有数据）</div>
+        </div>
+        <span style="color:var(--muted);font-size:18px">›</span>
+      </div>
+      <div onclick="openSettingPage('update')" style="cursor:pointer;padding:16px 18px;border:1.5px solid var(--border);border-radius:12px;background:var(--m-fit-l);transition:.2s;display:flex;align-items:center;gap:14px" onmouseover="this.style.borderColor='var(--m-fit)';this.style.transform='translateX(2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateX(0)'">
+        <span style="font-size:26px">🔄</span>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:600;color:var(--m-fit)">检查更新</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">手动检查是否有新版本</div>
+        </div>
+        <span style="color:var(--muted);font-size:18px">›</span>
+      </div>
+      <div onclick="openSettingPage('about')" style="cursor:pointer;padding:16px 18px;border:1.5px solid var(--border);border-radius:12px;background:var(--m-note-l);transition:.2s;display:flex;align-items:center;gap:14px" onmouseover="this.style.borderColor='var(--m-note)';this.style.transform='translateX(2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateX(0)'">
+        <span style="font-size:26px">ℹ️</span>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:600;color:var(--m-note)">关于</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">版本信息与平台说明</div>
+        </div>
+        <span style="color:var(--muted);font-size:18px">›</span>
       </div>
     </div>
-
-    <!-- 更新 -->
-    <div class="card">
-      <h3><span class="ico">🔄</span>检查更新</h3>
-      <p class="muted" style="font-size:13px;margin-bottom:14px">每次打开工作台会自动检查新版本。也可以手动检查：</p>
-      <button class="btn" onclick="manualCheckUpdate()">🔄 手动检查更新</button>
-      <div class="hint" id="updateStatus" style="margin-top:8px"></div>
-    </div>
   </div>
+
+  <!-- 设置子页面容器 -->
+  <div id="settingsPage" style="display:none"></div>
 </section>
 
 </main>
@@ -1103,44 +1109,29 @@ function getMedStatus(m){
 function renderMeds(){
   const el=$('#medList');
   if(!meds.length){el.innerHTML='<div class="empty">暂无用药记录</div>';return}
-  const today=new Date();today.setHours(0,0,0,0);
 
   // 按状态分组
   const groups={active:[],pending:[],ended:[]};
   meds.forEach(m=>groups[getMedStatus(m)].push(m));
 
-  let html='';
-  // 正在服用 - 直接展示
-  html+=`<div style="margin-bottom:18px">
-    <div style="font-size:14px;font-weight:600;color:var(--m-fin);margin-bottom:8px;padding:6px 10px;background:var(--m-fin-l);border-radius:8px;display:flex;align-items:center;gap:6px">
-      🟢 正在服用<span style="color:var(--muted);font-weight:400;font-size:12px">（${groups.active.length}种）</span>
+  // 三个状态入口卡片（统一形式）
+  const cards=[
+    {key:'active', icon:'🟢', title:'正在服用', count:groups.active.length, color:'var(--m-fin)', bg:'var(--m-fin-l)', hover:'var(--m-fin)'},
+    {key:'pending', icon:'🔵', title:'未开始', count:groups.pending.length, color:'var(--m-med)', bg:'var(--m-med-l)', hover:'var(--m-med)'},
+    {key:'ended', icon:'⚪', title:'已结束', count:groups.ended.length, color:'var(--dim)', bg:'var(--card-2)', hover:'var(--dim)'}
+  ];
+  let html=`<div style="display:flex;flex-direction:column;gap:10px">`;
+  cards.forEach(c=>{
+    html+=`<div onclick="openMedGroup('${c.key}')" style="cursor:pointer;padding:16px 18px;border:1.5px solid var(--border);border-radius:12px;background:${c.bg};transition:.2s;display:flex;align-items:center;gap:14px" onmouseover="this.style.borderColor='${c.hover}';this.style.transform='translateX(2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateX(0)'">
+      <span style="font-size:26px">${c.icon}</span>
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:600;color:${c.color}">${c.title}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px">${c.count}种药物</div>
+      </div>
+      <span style="color:var(--muted);font-size:18px">›</span>
     </div>`;
-  if(groups.active.length>0){
-    html+=groups.active.map(m=>renderMedItem(m,today,'active')).join('');
-  }else{
-    html+=`<div class="empty" style="padding:18px">暂无正在服用的药物</div>`;
-  }
+  });
   html+=`</div>`;
-
-  // 未开始 / 已结束 - 入口卡片，点击进入新页面
-  html+=`<div class="divider" style="margin:18px 0"></div>`;
-  html+=`<div style="display:flex;gap:10px;flex-wrap:wrap">
-    <div onclick="openMedGroup('pending')" style="flex:1;min-width:140px;cursor:pointer;padding:14px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--m-med-l);transition:.2s;display:flex;align-items:center;gap:10px" onmouseover="this.style.borderColor='var(--m-med)'" onmouseout="this.style.borderColor='var(--border)'">
-      <span style="font-size:24px">🔵</span>
-      <div>
-        <div style="font-size:14px;font-weight:600;color:var(--m-med)">未开始</div>
-        <div style="font-size:12px;color:var(--muted)">${groups.pending.length}种药物 ›</div>
-      </div>
-    </div>
-    <div onclick="openMedGroup('ended')" style="flex:1;min-width:140px;cursor:pointer;padding:14px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--card-2);transition:.2s;display:flex;align-items:center;gap:10px" onmouseover="this.style.borderColor='var(--dim)'" onmouseout="this.style.borderColor='var(--border)'">
-      <span style="font-size:24px">⚪</span>
-      <div>
-        <div style="font-size:14px;font-weight:600;color:var(--dim)">已结束</div>
-        <div style="font-size:12px;color:var(--muted)">${groups.ended.length}种药物 ›</div>
-      </div>
-    </div>
-  </div>`;
-
   el.innerHTML=html;
 }
 function openMedGroup(group){
@@ -1150,12 +1141,13 @@ function openMedGroup(group){
   meds.forEach(m=>groups[getMedStatus(m)].push(m));
   const list=groups[group]||[];
   const cfg={
+    active:{title:'🟢 正在服用',color:'var(--m-fin)',bg:'var(--m-fin-l)',empty:'暂无正在服用的药物'},
     pending:{title:'🔵 未开始',color:'var(--m-med)',bg:'var(--m-med-l)',empty:'暂无未开始的药物'},
     ended:{title:'⚪ 已结束',color:'var(--dim)',bg:'var(--card-2)',empty:'暂无已结束的药物'}
   }[group];
   let html=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
     <button class="btn sm" onclick="renderMeds()" style="flex:0 0 auto">‹ 返回</button>
-    <div style="flex:1;font-size:15px;font-weight:600;color:${cfg.color};padding:8px 12px;background:${cfg.bg};border-radius:8px;display:flex;align-items:center;gap:6px">
+    <div style="flex:1;font-size:15px;font-weight:600;color:${cfg.color};padding:10px 14px;background:${cfg.bg};border-radius:10px;display:flex;align-items:center;gap:6px">
       ${cfg.title}<span style="color:var(--muted);font-weight:400;font-size:12px">（${list.length}种）</span>
     </div>
   </div>`;
@@ -1707,8 +1699,51 @@ function importData(file){
   r.readAsText(file);
 }
 
+/* ============ 设置页面切换 ============ */
+function openSettingPage(key){
+  const home=$('#settingsHome'),page=$('#settingsPage');
+  const cfg={
+    backup:{icon:'💾',title:'数据备份',color:'var(--m-med)',bg:'var(--m-med-l)',
+      body:`<p class="muted" style="font-size:13px;margin-bottom:14px">导出全部数据（报告、用药、打卡、训练、财经、笔记）为 JSON 文件，保存到手机或电脑。</p>
+        <button class="btn primary" onclick="exportData()">💾 导出备份数据</button>
+        <div class="hint">建议每周备份一次，清除浏览器数据后可凭备份恢复</div>`},
+    restore:{icon:'📂',title:'数据恢复',color:'var(--m-fin)',bg:'var(--m-fin-l)',
+      body:`<p class="muted" style="font-size:13px;margin-bottom:14px">选择之前导出的 JSON 备份文件，恢复全部数据。<b style="color:var(--danger)">注意：会覆盖现有数据</b></p>
+        <button class="btn" onclick="document.getElementById('importFile').click()">📂 选择备份文件恢复</button>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this.files[0])">`},
+    update:{icon:'🔄',title:'检查更新',color:'var(--m-fit)',bg:'var(--m-fit-l)',
+      body:`<p class="muted" style="font-size:13px;margin-bottom:14px">每次打开工作台会自动检查新版本。也可以手动检查：</p>
+        <button class="btn" onclick="manualCheckUpdate()">🔄 手动检查更新</button>
+        <div class="hint" id="updateStatus" style="margin-top:8px"></div>`},
+    about:{icon:'ℹ️',title:'关于',color:'var(--m-note)',bg:'var(--m-note-l)',
+      body:`<div style="font-size:13px;line-height:2">
+        <div>应用名称：<b>AYY 工作台</b></div>
+        <div>当前版本：<span class="mono" id="verShow2">--</span></div>
+        <div>数据存储：浏览器本地（localStorage + AES-GCM加密笔记）</div>
+        <div>托管平台：腾讯云 CloudBase（上海）</div>
+        <div>访问地址：<span class="mono" style="font-size:11px;word-break:break-all">tcloudbaseapp.com</span></div>
+      </div>`}
+  }[key];
+  let html=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+    <button class="btn sm" onclick="closeSettingPage()" style="flex:0 0 auto">‹ 返回</button>
+    <div style="flex:1;font-size:15px;font-weight:600;color:${cfg.color};padding:10px 14px;background:${cfg.bg};border-radius:10px;display:flex;align-items:center;gap:6px">
+      ${cfg.icon} ${cfg.title}
+    </div>
+  </div>
+  <div class="card">${cfg.body}</div>`;
+  page.innerHTML=html;
+  home.style.display='none';
+  page.style.display='block';
+  page.scrollIntoView({behavior:'smooth',block:'start'});
+  if(key==='about'){$('#verShow2').textContent=APP_VERSION;}
+}
+function closeSettingPage(){
+  $('#settingsHome').style.display='block';
+  $('#settingsPage').style.display='none';
+}
+
 /* ============ 自动更新检测 ============ */
-const APP_VERSION = '20260801-1'; // 版本号，每次更新递增
+const APP_VERSION = '20260801-2'; // 版本号，每次更新递增
 async function checkUpdate(silent){
   try{
     const res = await fetch('https://lyayy-0617-d8gn8knmd4b948f97-1460236867.tcloudbaseapp.com/index.html?v='+Date.now(),{cache:'no-store'});
