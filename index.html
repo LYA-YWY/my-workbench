@@ -281,6 +281,13 @@ label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}
 .sub-tab:hover{border-color:var(--accent);color:var(--text)}
 .sub-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 .sub-panel{display:none;animation:fade .3s ease}
+
+/* ===== 折叠归集（details/summary） ===== */
+details>summary{list-style:none}
+details>summary::-webkit-details-marker{display:none}
+details[open]>summary{border-bottom:1px solid var(--border)}
+details>summary{user-select:none}
+details>summary:active{background:var(--card-2)}
 .sub-panel.active{display:block}
 </style>
 </head>
@@ -1102,49 +1109,69 @@ function renderMeds(){
   const groups={active:[],pending:[],ended:[]};
   meds.forEach(m=>groups[getMedStatus(m)].push(m));
 
-  const groupConfig=[
-    {key:'active',label:'🟢 正在服用',color:'var(--m-fin)'},
-    {key:'pending',label:'🔵 未开始',color:'var(--m-med)'},
-    {key:'ended',label:'⚪ 已结束',color:'var(--dim)'}
-  ];
-
   let html='';
-  groupConfig.forEach(g=>{
-    if(groups[g.key].length===0)return;
+  // 正在服用 - 直接展示
+  if(groups.active.length>0){
     html+=`<div style="margin-bottom:18px">
-      <div style="font-size:14px;font-weight:600;color:${g.color};margin-bottom:8px;padding:6px 10px;background:var(--card-2);border-radius:8px;display:flex;align-items:center;gap:6px">
-        ${g.label}<span style="color:var(--muted);font-weight:400;font-size:12px">（${groups[g.key].length}种）</span>
+      <div style="font-size:14px;font-weight:600;color:var(--m-fin);margin-bottom:8px;padding:6px 10px;background:var(--m-fin-l);border-radius:8px;display:flex;align-items:center;gap:6px">
+        🟢 正在服用<span style="color:var(--muted);font-weight:400;font-size:12px">（${groups.active.length}种）</span>
       </div>`;
-    html+=groups[g.key].map(m=>{
-      let cycleInfo='',statusTag='';
-      const s=m.start?new Date(m.start):null;
-      const e=m.end?new Date(m.end):null;
-      if(s)s.setHours(0,0,0,0);
-      if(e)e.setHours(0,0,0,0);
-      const fmtD=d=>d?`${d.getMonth()+1}月${d.getDate()}日`:'';
-      cycleInfo=`${fmtD(s)} ~ ${fmtD(e)}`;
-      if(g.key==='active'&&s&&e){
-        const days=Math.ceil((e-today)/86400000);
-        statusTag=`<span class="tag up">剩${days+1}天</span>`;
-      }else if(g.key==='pending'&&s){
-        const days=Math.ceil((s-today)/86400000);
-        statusTag=`<span class="tag">${days}天后开始</span>`;
-      }else if(g.key==='ended'){
-        statusTag=`<span class="tag down">已结束</span>`;
-      }
-      return `<div class="med-item">
-        <span style="font-size:18px">💊</span>
-        <span class="name">${m.name}<br>
-          <span class="dose">${m.dose||''}</span>
-          ${cycleInfo&&cycleInfo!==' ~ '?`<br><span class="dose">📅 ${cycleInfo}</span>`:''}
-          ${statusTag?`<br>${statusTag}`:''}
-        </span>
-        <button class="btn sm danger" onclick="delMed('${m.id}')">删</button>
-      </div>`;
-    }).join('');
+    html+=groups.active.map(m=>renderMedItem(m,today,'active')).join('');
     html+=`</div>`;
-  });
+  }else{
+    html+=`<div class="empty" style="margin-bottom:14px">暂无正在服用的药物</div>`;
+  }
+
+  // 未开始 - 折叠归集
+  if(groups.pending.length>0){
+    html+=`<details style="margin-bottom:12px;border:1px solid var(--border);border-radius:10px;overflow:hidden">
+      <summary style="padding:10px 14px;font-size:14px;font-weight:600;color:var(--m-med);background:var(--m-med-l);cursor:pointer;display:flex;align-items:center;gap:6px;list-style:none">
+        🔵 未开始<span style="color:var(--muted);font-weight:400;font-size:12px">（${groups.pending.length}种）</span>
+        <span style="margin-left:auto;font-size:12px;color:var(--muted)">点击展开 ▾</span>
+      </summary>
+      <div style="padding:8px 14px">`;
+    html+=groups.pending.map(m=>renderMedItem(m,today,'pending')).join('');
+    html+=`</div></details>`;
+  }
+
+  // 已结束 - 折叠归集
+  if(groups.ended.length>0){
+    html+=`<details style="margin-bottom:12px;border:1px solid var(--border);border-radius:10px;overflow:hidden">
+      <summary style="padding:10px 14px;font-size:14px;font-weight:600;color:var(--dim);background:var(--card-2);cursor:pointer;display:flex;align-items:center;gap:6px;list-style:none">
+        ⚪ 已结束<span style="color:var(--muted);font-weight:400;font-size:12px">（${groups.ended.length}种）</span>
+        <span style="margin-left:auto;font-size:12px;color:var(--muted)">点击展开 ▾</span>
+      </summary>
+      <div style="padding:8px 14px">`;
+    html+=groups.ended.map(m=>renderMedItem(m,today,'ended')).join('');
+    html+=`</div></details>`;
+  }
+
   el.innerHTML=html;
+}
+function renderMedItem(m,today,group){
+  let cycleInfo='',statusTag='';
+  const s=m.start?new Date(m.start):null;
+  const e=m.end?new Date(m.end):null;
+  if(s)s.setHours(0,0,0,0);
+  if(e)e.setHours(0,0,0,0);
+  const fmtD=d=>d?`${d.getMonth()+1}月${d.getDate()}日`:'';
+  cycleInfo=`${fmtD(s)} ~ ${fmtD(e)}`;
+  if(group==='active'&&s&&e){
+    const days=Math.ceil((e-today)/86400000);
+    statusTag=`<span class="tag up">剩${days+1}天</span>`;
+  }else if(group==='pending'&&s){
+    const days=Math.ceil((s-today)/86400000);
+    statusTag=`<span class="tag">${days}天后开始</span>`;
+  }
+  return `<div class="med-item">
+    <span style="font-size:18px">💊</span>
+    <span class="name">${m.name}<br>
+      <span class="dose">${m.dose||''}</span>
+      ${cycleInfo&&cycleInfo!==' ~ '?`<br><span class="dose">📅 ${cycleInfo}</span>`:''}
+      ${statusTag?`<br>${statusTag}`:''}
+    </span>
+    <button class="btn sm danger" onclick="delMed('${m.id}')">删</button>
+  </div>`;
 }
 function addMed(){
   const n=$('#medName').value.trim(),d=$('#medDose').value.trim();
@@ -1662,7 +1689,7 @@ function importData(file){
 }
 
 /* ============ 自动更新检测 ============ */
-const APP_VERSION = '20260801-1'; // 版本号，每次更新递增
+const APP_VERSION = '20260728-1'; // 版本号，每次更新递增
 async function checkUpdate(silent){
   try{
     const res = await fetch('https://lyayy-0617-d8gn8knmd4b948f97-1460236867.tcloudbaseapp.com/index.html?v='+Date.now(),{cache:'no-store'});
