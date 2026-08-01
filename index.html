@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#9a2e2e">
+<meta name="theme-color" content="#c47a96">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="AYY">
@@ -13,7 +13,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>AYY 工作台</title>
-<link rel="manifest" href="manifest.json?v=20260730">
+<link rel="manifest" href="manifest.json?v=20260801">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icons/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1743,7 +1743,7 @@ function closeSettingPage(){
 }
 
 /* ============ 自动更新检测 ============ */
-const APP_VERSION = '20260801-2'; // 版本号，每次更新递增
+const APP_VERSION = '20260801-3'; // 版本号，每次更新递增
 async function checkUpdate(silent){
   try{
     const res = await fetch('https://lyayy-0617-d8gn8knmd4b948f97-1460236867.tcloudbaseapp.com/index.html?v='+Date.now(),{cache:'no-store'});
@@ -1751,14 +1751,13 @@ async function checkUpdate(silent){
     const m = txt.match(/APP_VERSION\s*=\s*'([^']+)'/);
     if(m && m[1] !== APP_VERSION){
       if(silent){
-        if(confirm('工作台有新版本，是否立即更新？')){
-          localStorage.removeItem('finance');
-          location.reload(true);
+        if(confirm('工作台有新版本，是否立即更新？\n（您的数据不会丢失）')){
+          // 不删除任何 localStorage 数据，只强制刷新页面绕过缓存
+          location.href = location.pathname + '?v=' + Date.now();
         }
       }else{
         $('#updateStatus').innerHTML = '<span style="color:var(--accent)">发现新版本 v'+m[1]+'，正在更新...</span>';
-        localStorage.removeItem('finance');
-        location.reload(true);
+        location.href = location.pathname + '?v=' + Date.now();
       }
     }else{
       if(!silent) $('#updateStatus').innerHTML = '<span style="color:#3a8b5a">✓ 当前已是最新版本</span>';
