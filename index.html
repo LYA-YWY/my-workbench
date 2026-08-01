@@ -1078,39 +1078,73 @@ function saveReportInterpret(){
 
 /* ============ 医疗：用药记录 ============ */
 let meds=LS.get('meds',[]);
+function getMedStatus(m){
+  const today=new Date();today.setHours(0,0,0,0);
+  const s=m.start?new Date(m.start):null;
+  const e=m.end?new Date(m.end):null;
+  if(s)s.setHours(0,0,0,0);
+  if(e)e.setHours(0,0,0,0);
+  if(s&&today<s)return 'pending';
+  if(e&&today>e)return 'ended';
+  if(s&&e){
+    const days=Math.ceil((e-today)/86400000);
+    return days>=0?'active':'ended';
+  }
+  if(s)return 'active';
+  return 'active'; // 没填日期默认进行中
+}
 function renderMeds(){
   const el=$('#medList');
   if(!meds.length){el.innerHTML='<div class="empty">暂无用药记录</div>';return}
   const today=new Date();today.setHours(0,0,0,0);
-  el.innerHTML=meds.map(m=>{
-    // 计算周期状态
-    let cycleInfo='',statusTag='';
-    if(m.start||m.end){
+
+  // 按状态分组
+  const groups={active:[],pending:[],ended:[]};
+  meds.forEach(m=>groups[getMedStatus(m)].push(m));
+
+  const groupConfig=[
+    {key:'active',label:'🟢 正在服用',color:'var(--m-fin)'},
+    {key:'pending',label:'🔵 未开始',color:'var(--m-med)'},
+    {key:'ended',label:'⚪ 已结束',color:'var(--dim)'}
+  ];
+
+  let html='';
+  groupConfig.forEach(g=>{
+    if(groups[g.key].length===0)return;
+    html+=`<div style="margin-bottom:18px">
+      <div style="font-size:14px;font-weight:600;color:${g.color};margin-bottom:8px;padding:6px 10px;background:var(--card-2);border-radius:8px;display:flex;align-items:center;gap:6px">
+        ${g.label}<span style="color:var(--muted);font-weight:400;font-size:12px">（${groups[g.key].length}种）</span>
+      </div>`;
+    html+=groups[g.key].map(m=>{
+      let cycleInfo='',statusTag='';
       const s=m.start?new Date(m.start):null;
       const e=m.end?new Date(m.end):null;
       if(s)s.setHours(0,0,0,0);
       if(e)e.setHours(0,0,0,0);
       const fmtD=d=>d?`${d.getMonth()+1}月${d.getDate()}日`:'';
       cycleInfo=`${fmtD(s)} ~ ${fmtD(e)}`;
-      // 状态判断
-      if(s&&today<s){statusTag='<span class="tag">未开始</span>'}
-      else if(e&&today>e){statusTag='<span class="tag down">已结束</span>'}
-      else if(s&&e){
+      if(g.key==='active'&&s&&e){
         const days=Math.ceil((e-today)/86400000);
-        statusTag=days>=0?`<span class="tag up">服用中·剩${days+1}天</span>`:'<span class="tag down">已结束</span>';
-      }else if(s){statusTag='<span class="tag up">服用中</span>'}
-    }
-    return `
-    <div class="med-item">
-      <span style="font-size:18px">💊</span>
-      <span class="name">${m.name}<br>
-        <span class="dose">${m.dose||''}</span>
-        ${cycleInfo?`<br><span class="dose">📅 ${cycleInfo}</span>`:''}
-        ${statusTag?`<br>${statusTag}`:''}
-      </span>
-      <button class="btn sm danger" onclick="delMed('${m.id}')">删</button>
-    </div>`;
-  }).join('');
+        statusTag=`<span class="tag up">剩${days+1}天</span>`;
+      }else if(g.key==='pending'&&s){
+        const days=Math.ceil((s-today)/86400000);
+        statusTag=`<span class="tag">${days}天后开始</span>`;
+      }else if(g.key==='ended'){
+        statusTag=`<span class="tag down">已结束</span>`;
+      }
+      return `<div class="med-item">
+        <span style="font-size:18px">💊</span>
+        <span class="name">${m.name}<br>
+          <span class="dose">${m.dose||''}</span>
+          ${cycleInfo&&cycleInfo!==' ~ '?`<br><span class="dose">📅 ${cycleInfo}</span>`:''}
+          ${statusTag?`<br>${statusTag}`:''}
+        </span>
+        <button class="btn sm danger" onclick="delMed('${m.id}')">删</button>
+      </div>`;
+    }).join('');
+    html+=`</div>`;
+  });
+  el.innerHTML=html;
 }
 function addMed(){
   const n=$('#medName').value.trim(),d=$('#medDose').value.trim();
@@ -1628,7 +1662,7 @@ function importData(file){
 }
 
 /* ============ 自动更新检测 ============ */
-const APP_VERSION = '20260731-1'; // 版本号，每次更新递增
+const APP_VERSION = '20260801-1'; // 版本号，每次更新递增
 async function checkUpdate(silent){
   try{
     const res = await fetch('https://lyayy-0617-d8gn8knmd4b948f97-1460236867.tcloudbaseapp.com/index.html?v='+Date.now(),{cache:'no-store'});
